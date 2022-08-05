@@ -6,8 +6,6 @@ export default class TodoList extends Component {
 
     super();
     this.state = {
-      edit: "",
-      editText:"",
       todos: localStorage.getItem("todos") ? JSON.parse(localStorage.getItem("todos")) : [], 
       todo: "",
       filtered: localStorage.getItem("todos")? JSON.parse(localStorage.getItem("todos")) : [], 
@@ -15,9 +13,8 @@ export default class TodoList extends Component {
       active:localStorage.getItem("active")
     };
 
-    this.setEdit = this.setEdit.bind(this);
     this.editTodo = this.editTodo.bind(this);
-    this.saveTodos = this.saveTodos.bind(this);
+   this.saveTodos = this.saveTodos.bind(this);
     this.changeStatus = this.changeStatus.bind(this);
     this.changeAllHandler = this.changeAllHandler.bind(this)
     this.changeAllCompleted = this.changeAllCompleted.bind(this);
@@ -40,11 +37,11 @@ export default class TodoList extends Component {
     if (this.state.todo.trim().length !== 0) {
 
       let changedTodos=[{id: Date.now(), text: this.state.todo, checked: false},...this.state.todos];
-      this.saveTodos(changedTodos);
+      this.saveTodos(changedTodos)
       this.setState (({todo:''}),() => {
         this.changeStatus();
         this.filter();
-      });
+      });    
     }
   }
 
@@ -93,30 +90,38 @@ export default class TodoList extends Component {
     
   }
 
-  setEdit(id,text){ 
-    this.setState(() => ({ 
-      edit:id, 
-      editText:text 
-  })) 
-  } 
 
-  editTodo(e,id){ 
+  editTodo(e,id,newValue){ 
     e.preventDefault(); 
    
-    let changedTodos = this.state.todos.map(elem => { 
+    let changedTodos = this.state.filtered.map(elem => { 
       if(elem.id == id){
         return {
           ...elem,
-          text:this.state.editText
+          text:newValue
         } 
       } 
       return elem;
     }); 
+    console.log(changedTodos === this.state.filtered);
 
-   
-    this.saveTodos(changedTodos);
-    this.setState({edit:""})
 
+    this.setState({filtered:changedTodos})
+
+   this.setState(state => (
+    {filtered: state.filtered.map(elem => { 
+      if(elem.id == id){
+        return {
+          ...elem,
+          text:newValue
+        } 
+      } 
+      return elem;
+    })}),()=> {
+      localStorage.setItem("todos",JSON.stringify(this.state.todos)) 
+    })
+
+    //this.saveTodos(changedTodos);
   } 
 
   changeAllHandler(){
@@ -178,7 +183,6 @@ export default class TodoList extends Component {
       this.setState(() => ({filtered:arr})) 
     }
 
-
   render() {
     return (
       <>
@@ -212,9 +216,6 @@ export default class TodoList extends Component {
                 deleteTodo={(id) => this.deleteTodo(id)}
                 changeStatus={this.changeStatus}
                 editTodo={this.editTodo}
-                edit={this.state.edit}
-                editText={this.state.editText}
-                setEdit={this.setEdit}
               />
             ))
           )}
