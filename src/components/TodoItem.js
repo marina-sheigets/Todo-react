@@ -9,6 +9,7 @@ export default class TodoItem extends Component {
     };
   }
 
+
   render() {
     return (
         <>
@@ -16,7 +17,7 @@ export default class TodoItem extends Component {
             this.props.edit === this.state.todo.id ?
             <span className="edit">
                    <input value={this.props.editText}  onChange={(e)=>this.props.setEdit(this.state.todo.id,e.target.value)} /> 
-                   <button className='save' type="submit"  onClick={(e) => this.props.editTodo(e,this.props.edit,this.props.editText)}>☑</button> 
+                   <button className='save' type="submit"  onClick={(e) => this.props.editTodo(e,this.props.edit/*,this.props.editText*/)}>☑</button> 
             </span>
                 :
             <li>

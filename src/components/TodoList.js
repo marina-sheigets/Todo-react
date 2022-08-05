@@ -8,28 +8,24 @@ export default class TodoList extends Component {
     this.state = {
       edit: "",
       editText:"",
-      todos: JSON.parse(localStorage.getItem("todos")),
+      todos: localStorage.getItem("todos") ? JSON.parse(localStorage.getItem("todos")) : [], 
       todo: "",
-      filtered:JSON.parse(localStorage.getItem("todos")),
+      filtered: localStorage.getItem("todos")? JSON.parse(localStorage.getItem("todos")) : [], 
       variant:"All",
       active:localStorage.getItem("active")
     };
 
-    this.filter = this.filter.bind(this);
-    this.addTodo = this.addTodo.bind(this);
     this.setEdit = this.setEdit.bind(this);
     this.editTodo = this.editTodo.bind(this);
     this.saveTodos = this.saveTodos.bind(this);
-    this.deleteTodo = this.deleteTodo.bind(this);
     this.changeStatus = this.changeStatus.bind(this);
     this.changeAllHandler = this.changeAllHandler.bind(this)
-    this.handleInputChange = this.handleInputChange.bind(this);
     this.changeAllCompleted = this.changeAllCompleted.bind(this);
 
   }
 
   componentDidMount(){
-    this.setState(() => ({variant:"All"}))
+    this.setState({variant:"All"})
     this.changeStatus();
     this.filter();
   }
@@ -45,7 +41,7 @@ export default class TodoList extends Component {
 
       let changedTodos=[{id: Date.now(), text: this.state.todo, checked: false},...this.state.todos];
       this.saveTodos(changedTodos);
-      this.setState(() => ({todo:''}),() => {
+      this.setState (({todo:''}),() => {
         this.changeStatus();
         this.filter();
       });
@@ -66,19 +62,22 @@ export default class TodoList extends Component {
     let changedTodos = this.state.todos;
     let totalLength=this.state.todos.length;
     if(id){
-      changedTodos.forEach((elem) => {
+        changedTodos=changedTodos.map((elem) => {
         if (elem.id === id) {
-          elem.checked = !elem.checked;
+          return {
+            ...elem,
+            checked: !elem.checked
+          }
         }
+        return elem;
       });
-  
-      this.saveTodos(changedTodos);
     }
-
-    let amountOfCompleted=totalLength; 
+    this.saveTodos(changedTodos,()=>{
+      let amountOfCompleted=totalLength; 
+    //console.log(this.state.todos,totalLength);
 
     for(let i = 0;i < totalLength;i ++){
-      if(!this.state.todos[i].checked){
+      if(!changedTodos[i].checked){
         amountOfCompleted--;
       }
     }
@@ -89,7 +88,9 @@ export default class TodoList extends Component {
     }else{
       this.setState(() => ({active:""}))
       localStorage.setItem("active","")
-    }
+    } 
+    });
+    
   }
 
   setEdit(id,text){ 
@@ -99,17 +100,23 @@ export default class TodoList extends Component {
   })) 
   } 
 
-  editTodo(e,id,newValue){ 
+  editTodo(e,id){ 
     e.preventDefault(); 
-    let changedTodos = this.state.todos; 
-    changedTodos.forEach(elem => { 
-      if(elem.id === id){ 
-        elem.text = newValue 
+   
+    let changedTodos = this.state.todos.map(elem => { 
+      if(elem.id == id){
+        return {
+          ...elem,
+          text:this.state.editText
+        } 
       } 
+      return elem;
     }); 
 
+   
     this.saveTodos(changedTodos);
-    this.setState(() => ({edit:""}))
+    this.setState({edit:""})
+
   } 
 
   changeAllHandler(){
@@ -134,12 +141,13 @@ export default class TodoList extends Component {
 
   }
 
-  saveTodos(newTodos) {
-    this.setState(
-      () => ({
+  saveTodos(newTodos,callback = undefined) {
+    this.setState({
+        filtered:newTodos,
         todos: newTodos,
-      }),
+      },
       () => {
+        if(callback) callback()
         localStorage.setItem("todos", JSON.stringify(newTodos));
         this.filter();
       }
@@ -175,7 +183,7 @@ export default class TodoList extends Component {
     return (
       <>
         <h1 className="main-h1">ToDo List</h1>
-        <form className="todo-form" onSubmit={this.addTodo}>
+        <form className="todo-form" onSubmit={(e) =>this.addTodo(e)}>
           <button
             className={
               "activate " + this.state.active
@@ -187,7 +195,7 @@ export default class TodoList extends Component {
           <input
             type="text"
             value={this.state.todo}
-            onChange={this.handleInputChange}
+            onChange={(e) => this.handleInputChange(e)}
             className="todo-input"
             placeholder="Enter todo task"
           />
@@ -201,7 +209,7 @@ export default class TodoList extends Component {
               <TodoItem
                 key={elem.id}
                 todo={elem}
-                deleteTodo={this.deleteTodo}
+                deleteTodo={(id) => this.deleteTodo(id)}
                 changeStatus={this.changeStatus}
                 editTodo={this.editTodo}
                 edit={this.state.edit}
@@ -211,8 +219,9 @@ export default class TodoList extends Component {
             ))
           )}
         </ul>
+      
         <div className="filter-area">
-          <select onChange={this.filter}>
+          <select onChange={(e) => this.filter(e)}>
             <option>All</option>
             <option>Active</option>
             <option>Completed</option>
