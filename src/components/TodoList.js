@@ -13,13 +13,8 @@ export default class TodoList extends Component {
       active:localStorage.getItem("active")
     };
 
-    this.editTodo = this.editTodo.bind(this);
    this.saveTodos = this.saveTodos.bind(this);
-    this.changeStatus = this.changeStatus.bind(this);
-    this.changeAllHandler = this.changeAllHandler.bind(this)
-    this.changeAllCompleted = this.changeAllCompleted.bind(this);
-
-  }
+}
 
   componentDidMount(){
     this.setState({variant:"All"})
@@ -40,7 +35,7 @@ export default class TodoList extends Component {
       this.saveTodos(changedTodos)
       this.setState (({todo:''}),() => {
         this.changeStatus();
-        this.filter();
+        this.filter(); 
       });    
     }
   }
@@ -192,7 +187,7 @@ export default class TodoList extends Component {
             className={
               "activate " + this.state.active
             } 
-            onClick={this.changeAllHandler} 
+            onClick={() => this.changeAllHandler()} 
           >
             ☑
           </button>
@@ -214,8 +209,8 @@ export default class TodoList extends Component {
                 key={elem.id}
                 todo={elem}
                 deleteTodo={(id) => this.deleteTodo(id)}
-                changeStatus={this.changeStatus}
-                editTodo={this.editTodo}
+                changeStatus={(id) => this.changeStatus(id)}
+                editTodo={(e,id,newValue) => this.editTodo(e,id,newValue)}
               />
             ))
           )}
