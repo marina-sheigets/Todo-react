@@ -23,7 +23,7 @@ export default class TodoList extends Component {
   }
 
   handleInputChange(e) {
-    this.setState(() => ({ todo: e.target.value }));
+    this.setState({ todo: e.target.value });
   }
 
   addTodo(e) {
@@ -44,7 +44,7 @@ export default class TodoList extends Component {
     let changedTodos = this.state.todos;
     changedTodos = changedTodos.filter((elem) => elem.id != id);
     this.saveTodos(changedTodos);
-    this.setState(() => ({todo:''}),() => {
+    this.setState({todo:''},() => {
       this.changeStatus();
       this.filter();
     });
@@ -75,10 +75,10 @@ export default class TodoList extends Component {
     }
    
     if(amountOfCompleted === totalLength){
-      this.setState(() => ({active:"active"}))
+      this.setState({active:"active"})
       localStorage.setItem("active","active")
     }else{
-      this.setState(() => ({active:""}))
+      this.setState({active:""})
       localStorage.setItem("active","")
     } 
     });
@@ -121,7 +121,7 @@ export default class TodoList extends Component {
 
   changeAllHandler(){
     let currentClass=this.state.active === "active" ? "":"active";
-    this.setState(() => ({active:currentClass}),()=>{
+    this.setState({active:currentClass},()=>{
       this.changeAllCompleted();
     })      
   }
@@ -135,9 +135,7 @@ export default class TodoList extends Component {
         }else{ 
             elem.checked = false 
       }}) 
-      console.log(changedTodos)
       this.saveTodos(changedTodos); 
-      console.log(this.state.todos)
 
   }
 
@@ -161,21 +159,19 @@ export default class TodoList extends Component {
     let arr=[];
     switch(variant){
       case "Active": 
-          this.setState(() => ({variant:"Active"}))
+          this.setState({variant:"Active"});
           arr = this.state.todos.filter(elem=>elem.checked != true); 
           break; 
       case "Completed": 
-          this.setState(() => ({variant:"Completed"}))
+          this.setState({variant:"Completed"});
           arr = this.state.todos.filter(elem => elem.checked != false); 
           break; 
       case "All": 
-      this.setState(() => ({variant:"All"}))
-
+          this.setState({variant:"All"});
           arr = this.state.todos; 
           break; 
-      
     } 
-      this.setState(() => ({filtered:arr})) 
+      this.setState({filtered:arr}) 
     }
 
   render() {
