@@ -1,13 +1,13 @@
 {
-  "homepage":"https://marina-sheigets.github.io/Todo-react",
+  "homepage": "https://marina-sheigets.github.io/Todo-react",
   "name": "booking-hotel-app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "predeploy":"npm run build",
-    "deploy":"gh-pages -d build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build "
   },
@@ -20,7 +20,9 @@
     "@redux-devtools/extension": "^3.2.2",
     "@reduxjs/toolkit": "^1.8.3",
     "gh-pages": "^4.0.0",
+    "mongodb": "^4.8.1",
     "node-sass": "^7.0.1",
+    "nodemon": "^2.0.19",
     "react-redux": "^8.0.2",
     "react-scripts": "^5.0.1",
     "redux": "^4.2.0",
@@ -39,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "nodemon": "^2.0.19",
     "sass": "^1.53.0"
   }
 }

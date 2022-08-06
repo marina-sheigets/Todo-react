@@ -1,63 +1,60 @@
 import React, { Component } from "react";
 
 export default class TodoItem extends Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this.state = {
-      edit:"",
-      editText:"",
-      todo: props.todo,
-    };
+      editingMode:false,
+      editID:"",
+      editText:/* props.todo.text */"",
+    }
   }
 
-  
-  setEdit(text){ 
-    this.setState(() => ({ 
-      edit:this.state.todo.id, 
-      editText:text || this.state.todo.text  
-  })) 
-  } 
-
   handleDeleteTodo(){
-    this.props.deleteTodo(this.state.todo.id)
+    this.props.deleteTodo(this.props.todo.id)
   }
 
   handleChangeStatus(){
-    this.props.changeStatus(this.state.todo.id);
+    this.props.changeStatus(this.props.todo.id);
   }
 
   handleSetEdit(){
-    this.setEdit(this.state.todo.text)
+    this.setState({editingMode:true,editID:this.props.todo.id,editText:this.props.todo.text})
   }
 
   handleEditTodo(e){
-    this.props.editTodo(e,this.state.edit,this.state.editText);
-    this.setState({edit:""})
+    this.props.editTodo(e,this.state.editID,this.state.editText);
+    this.setState({editingMode:false})
   }
 
-
+  handleCancelTodo(e){
+    this.props.editTodo(e,this.state.editID,this.props.todo.text);
+    this.setState({editingMode:false,editingText:this.props.todo.text})
+  }
+  
   render() {
     return (
         <>
         {
-            this.state.edit === this.state.todo.id ?
+            this.state.editingMode ?
             <span className="edit">
-                   <input value={this.state.editText}  onChange={(e)=>this.setEdit(e.target.value)} /> 
-                   <button className='save' type="submit"  onClick={(e) => this.handleEditTodo(e)}>☑</button> 
+                  <button className='save' type="submit"  onClick={(e) => this.handleEditTodo(e)}>☑</button> 
+                   <input value={this.state.editText}  onChange={(e)=>this.setState({editText:e.target.value})} /> 
+                   <button className='cancel' type="submit"  onClick={(e) => this.handleCancelTodo(e)}>Cancel</button> 
             </span>
                 :
             <li>
                 <input
                 type="checkbox"
-                defaultChecked={this.state.todo.checked}
+                defaultChecked={this.props.todo.checked }
                 onChange={() => this.handleChangeStatus()}
                 />
                 <label
-                className={this.state.todo.checked.toString()}
+                className={this.props.todo.checked.toString()}
                 onDoubleClick={() => this.handleSetEdit()}
                 >
-                {this.state.todo.text}
+                {this.props.todo.text}
                 </label>
                 <button onClick={() => this.handleDeleteTodo()}>
                 ×

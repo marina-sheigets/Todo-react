@@ -55,7 +55,7 @@ body{
     background-color: coral;
 }
 
-.activate.active{
+.activate.true{
     background-color:grey;
 }
 
@@ -99,13 +99,18 @@ body{
 }
 
 .edit input{
-    flex:17;
+    flex:10;
 }
 
-.edit button{
+.edit .save{
     flex:1;
+    background-color:#1db36d;
 }
 
+.edit .cancel{
+    background-color: coral;
+    flex:3;
+}
 
 label.true{
     text-decoration: line-through;
@@ -131,6 +136,13 @@ label.true{
 @media  screen and (max-width:370px) {
     #root{
         width:100%;
+    }
+
+    .edit input{
+        flex:1;
+    }
+    .edit .cancel{
+        flex:5;
     }
 }
 
