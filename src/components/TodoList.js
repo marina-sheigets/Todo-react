@@ -1,28 +1,40 @@
 import React, { Component } from "react";
+import Loader from "./Loader/Loader.js";
 import TodoItem from "./TodoItem.js";
 
+const URL = "http://localhost:3030/todos";
 
 const OPTIONS={
   all:"All",
   active:"Active",
-  completed: "Completed"
+  completed: "Completed",
 }
 
 export default class TodoList extends Component {
   constructor() {
     super();
     this.state = {
-      todos: window.localStorage.getItem("todos")
+      todos:  window.localStorage.getItem("todos")
         ? JSON.parse(window.localStorage.getItem("todos"))
-        : [],
+        :  [],
       newTodoText: "",
       selectedOption: OPTIONS.all,
+      isLoading:true
     };
 
   }
 
   componentDidMount() {
-    this.setState({ selectedOption: OPTIONS.all });
+    fetch(URL)
+    .then(res => res.json())
+    .then((res)=>{
+      this.setState({ selectedOption: OPTIONS.all, todos:res/* , isLoading:false */});
+    })
+    .catch(() => this.setState({ todos:[], selectedOption: OPTIONS.all/* , isLoading:false */}))
+   
+    setTimeout(()=>{
+      this.setState({isLoading:false})
+    },500) 
   }
 
   handleInputChange = (e) => {
@@ -33,37 +45,39 @@ export default class TodoList extends Component {
     e.preventDefault();
 
     if (this.state.newTodoText.trim().length !== 0) {
-      let changedTodos = [
-        { id: Date.now(), text: this.state.newTodoText, checked: false },
-        ...this.state.todos,
-      ];
-      this.setState({ newTodoText: "" });
-      this.saveTodos(changedTodos);
+
+      fetch(URL,{
+        method:"POST",
+        body:JSON.stringify({title:this.state.newTodoText})
+      })
+      .then(res => res.json())
+      .then((res)=>{
+        this.setState({ todos:res, newTodoText: "" });
+      })
     }
   }
 
   deleteTodo = (id) => {
-    let changedTodos = [...this.state.todos];
-    changedTodos = changedTodos.filter((elem) => elem.id !== id);
-    this.saveTodos(changedTodos);
-    this.setState({ todo: "" });
+    fetch(URL + "/" + id,{
+      method:"DELETE",
+    })
+    .then(res => res.json())
+    .then((res)=>{
+      this.setState({ todos:res});
+    })  
   }
 
   changeStatus = (id) => {
-    let changedTodos = [...this.state.todos];
-    if (id) {
-      changedTodos = changedTodos.map((elem) => {
-        if (elem.id === id) {
-          return {
-            ...elem,
-            checked: !elem.checked,
-          };
-        }
-        return elem;
-      });
-      this.saveTodos(changedTodos)
-    }
+    fetch(URL + "/" + id,{
+      method:"PATCH",
+      body:JSON.stringify({changeStatus:"true"})
+    })
+    .then(res => res.json())
+    .then((res)=>{
+      this.setState({ todos:res});
+    })  
   }
+  
 
   isAllCompleted = () =>{
     return this.state.todos.every(elem => elem.checked);
@@ -72,52 +86,33 @@ export default class TodoList extends Component {
   editTodo = (e, id, newValue) => {
     e.preventDefault();
    
-    let changedTodos = this.state.todos.map((elem) => {
-      if (elem.id === id) {
-        return {
-          ...elem,
-          text: newValue,
-        };
-      }
-      return elem;
-    });
-
-    this.saveTodos(changedTodos);
+    fetch(URL + "/" + id,{
+      method:"PATCH",
+      body:JSON.stringify({title:newValue})
+    })
+    .then(res => res.json())
+    .then((res)=>{
+      this.setState({ todos:res});
+    })  
   }
 
   changeAllCompleted = () => {
-    let changedTodos =[...this.state.todos];
+    let active = this.isAllCompleted();
+    console.log(active)
 
-    if (this.isAllCompleted()) {
-      changedTodos = changedTodos.map(elem => {
-        return{
-          ...elem,
-          checked:false
-        }
-      })
-    }else{
-      changedTodos = changedTodos.map(elem => {
-        return{
-          ...elem,
-          checked:true
-        }
-      })
-    }    
-    this.saveTodos(changedTodos); 
+    fetch(URL,{
+      method:"PATCH",
+      body:JSON.stringify({changeStatusAll:"true",active})
+    })
+    .then(res => res.json())
+    .then((res)=>{
+      console.log(res)
+      this.setState({ todos:res});
+    })  
+    .catch(err=>console.log(err))
   }
 
-  saveTodos=(newTodos, callback)=> {
-    this.setState(
-      {
-        todos: newTodos,
-      },
-      () => {
-        if (callback) callback();
-        window.localStorage.setItem("todos", JSON.stringify(newTodos));
-      }
-    );
-  }
-
+ 
   setFilter(selectedOption) {
    this.setState({ selectedOption }); 
   }
@@ -143,6 +138,7 @@ export default class TodoList extends Component {
 
   render() {
     const filtered = this.getFilteredTodos();
+    const state = {...this.state};
     return (
       <>
         <h1 className="main-h1">ToDo List</h1>
@@ -155,7 +151,7 @@ export default class TodoList extends Component {
           </button>
           <input
             type="text"
-            value={this.state.newTodoText}
+            value={state.newTodoText}
             onChange={this.handleInputChange}
             className="todo-input"
             placeholder="Enter todo task"
@@ -163,7 +159,11 @@ export default class TodoList extends Component {
           <input type="submit" className="submit" value="Add"></input>
         </form>
         <ul className="todo-list">
-          { filtered.length === 0 ? (
+         {
+          state.isLoading ?
+            <Loader/>
+            :
+           filtered.length === 0 ? (
             <li>No any todos...</li>
           ) : (
            filtered.map((elem) => (

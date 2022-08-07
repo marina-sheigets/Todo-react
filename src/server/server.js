@@ -49,9 +49,9 @@ async function changeStatus(id){
 
 async function changeStatusAll(active){
     if(active){
-        await getTodosCollection().updateMany({},{$set:{checked:true}});
-    }else{
         await getTodosCollection().updateMany({},{$set:{checked:false}});
+    }else{
+        await getTodosCollection().updateMany({},{$set:{checked:true}});
     }
     return await getTodos();
 }
@@ -96,7 +96,7 @@ server.on("request", async function (request, response) {
             } 
             break;
 
-      /*   case "POST":
+         case "POST":
             response.writeHead(200, {...headers,'Content-Type': 'application/json'});
             let data = "";
                 request.on('data',  chunk  => {
@@ -115,7 +115,7 @@ server.on("request", async function (request, response) {
                           
             break;
 
-        case "PATCH":
+         case "PATCH":
             response.writeHead(200, {...headers,'Content-Type': 'application/json'})
             const id = getID(request); 
             let newText = '';
@@ -153,7 +153,7 @@ server.on("request", async function (request, response) {
                        }
                 }
             })
-            break; 
+            break;  
         case "DELETE":
             response.writeHead(200, headers);
             const i = getID(request);
@@ -166,7 +166,7 @@ server.on("request", async function (request, response) {
             }
 
             break;
- */
+ 
         case "OPTIONS": 
             response.writeHead(200, {
                 "Access-Control-Allow-Origin":"*", 

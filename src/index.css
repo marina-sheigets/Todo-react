@@ -60,7 +60,8 @@ body{
 }
 
 .todo-list{
-    text-align: center;
+   /*  text-align: center; */
+    align-items:center;
     display: flex;
     width: 70%;
     flex-direction: column;

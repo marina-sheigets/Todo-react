@@ -7,7 +7,7 @@ export default class TodoItem extends Component {
     this.state = {
       editingMode:false,
       editID:"",
-      editText:/* props.todo.text */"",
+      editText:"",
     }
   }
 
@@ -22,7 +22,7 @@ export default class TodoItem extends Component {
   handleSetEdit(){
     this.setState({editingMode:true,editID:this.props.todo.id,editText:this.props.todo.text})
   }
-
+  
   handleEditTodo(e){
     this.props.editTodo(e,this.state.editID,this.state.editText);
     this.setState({editingMode:false})
