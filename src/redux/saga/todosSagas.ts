@@ -1,28 +1,24 @@
 import { takeEvery, select, put, call } from 'redux-saga/effects';
 import {
 	GET_TODOS,
-	HTTP_METHODS,
 	DELETE_TODO,
 	ADD_TODO,
-	UPDATE_TODO_REQUEST,
+	UPDATE_TODO,
 	CHANGE_TODO_COMPLETED,
 	CHANGE_TODO_STATUS,
-	PATH,
-	FILTER_PARAM,
-} from '../../constants';
-import { setTodosFail, setTodosRequest, setTodosSuccess } from '../action-creators';
+} from '../constants';
+import { PATH, HTTP_METHODS, TODOS_URL } from '../../constants';
+import { setTodosFail, getTodosRequest, setTodosSuccess } from '../action-creators';
 import { ResponseGenerator } from '../../types';
 import { callAPI } from '../../api';
+import { getSelectedOption } from '../selectors';
+import { getURL } from '../../utils';
 
 function* getTodosSaga(): any {
 	try {
-		const state = yield select();
-		const { selectedOption } = state.todosReducer;
-		const todos: ResponseGenerator = yield call(
-			callAPI,
-			PATH.todos,
-			FILTER_PARAM + selectedOption
-		);
+		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
+		const URL = getURL(selectedOption);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL);
 
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
@@ -34,21 +30,16 @@ function* getTodosSaga(): any {
 
 function* deleteTodoSaga(action: any) {
 	try {
-		yield put(setTodosRequest());
-		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.todosReducer;
+		yield put(getTodosRequest());
+		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const id = action.payload;
+		const URL = getURL(selectedOption, id);
 
 		const requestOptions = {
 			method: HTTP_METHODS.DELETE,
 		};
-		const todos: ResponseGenerator = yield call(
-			callAPI,
-			PATH.todos,
-			FILTER_PARAM + selectedOption,
-			requestOptions,
-			id
-		);
+
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -59,20 +50,16 @@ function* deleteTodoSaga(action: any) {
 
 function* addTodoSaga(action: any) {
 	try {
-		yield put(setTodosRequest());
-		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.todosReducer;
+		yield put(getTodosRequest());
+		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const title = action.payload;
+		const URL = getURL(selectedOption);
+
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
 			body: JSON.stringify({ title }),
 		};
-		const todos: ResponseGenerator = yield call(
-			callAPI,
-			PATH.todos,
-			FILTER_PARAM + selectedOption,
-			requestOptions
-		);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -83,21 +70,17 @@ function* addTodoSaga(action: any) {
 
 function* updateTodoSaga(action: any) {
 	try {
-		yield put(setTodosRequest());
-		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.todosReducer;
+		yield put(getTodosRequest());
+		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { id, title } = yield action.payload;
+
+		const URL = getURL(selectedOption, id);
+
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ title }),
 		};
-		const todos: ResponseGenerator = yield call(
-			callAPI,
-			PATH.todos,
-			FILTER_PARAM + selectedOption,
-			requestOptions,
-			id
-		);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -108,21 +91,16 @@ function* updateTodoSaga(action: any) {
 
 function* changeTodoStatusSaga(action: any) {
 	try {
-		yield put(setTodosRequest());
-		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.todosReducer;
+		yield put(getTodosRequest());
+		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { id } = yield action.payload;
+		const URL = getURL(selectedOption, id);
+
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ changeStatus: 'true' }),
 		};
-		const todos: ResponseGenerator = yield call(
-			callAPI,
-			PATH.todos,
-			FILTER_PARAM + selectedOption,
-			requestOptions,
-			id
-		);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
 
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
@@ -134,20 +112,18 @@ function* changeTodoStatusSaga(action: any) {
 
 function* changeAllCompletedSaga(action: any) {
 	try {
-		yield put(setTodosRequest());
-		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.todosReducer;
+		yield put(getTodosRequest());
+		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { active } = yield action.payload;
+
+		const URL = getURL(selectedOption);
+		console.log(TODOS_URL + URL);
+
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ changeStatusAll: 'true', active }),
 		};
-		const todos: ResponseGenerator = yield call(
-			callAPI,
-			PATH.todos,
-			FILTER_PARAM + selectedOption,
-			requestOptions
-		);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -161,11 +137,11 @@ function* changeAllCompletedSaga(action: any) {
 function* todosWatcher() {
 	yield takeEvery(GET_TODOS.REQUEST, getTodosSaga);
 
-	yield takeEvery(UPDATE_TODO_REQUEST, updateTodoSaga);
-	yield takeEvery(ADD_TODO, addTodoSaga);
-	yield takeEvery(DELETE_TODO, deleteTodoSaga);
-	yield takeEvery(CHANGE_TODO_STATUS, changeTodoStatusSaga);
-	yield takeEvery(CHANGE_TODO_COMPLETED, changeAllCompletedSaga);
+	yield takeEvery(UPDATE_TODO.REQUEST, updateTodoSaga);
+	yield takeEvery(ADD_TODO.REQUEST, addTodoSaga);
+	yield takeEvery(DELETE_TODO.REQUEST, deleteTodoSaga);
+	yield takeEvery(CHANGE_TODO_STATUS.REQUEST, changeTodoStatusSaga);
+	yield takeEvery(CHANGE_TODO_COMPLETED.REQUEST, changeAllCompletedSaga);
 }
 
 export default todosWatcher;

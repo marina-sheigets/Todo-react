@@ -5,7 +5,7 @@ export interface Todo {
 }
 
 export interface IRootReducerState {
-	todos: Todo[];
+	todosList: Todo[];
 	selectedOption: string;
 	isLoading: boolean;
 	error: string | null;

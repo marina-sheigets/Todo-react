@@ -1,11 +1,6 @@
-import { HTTP_METHODS, DOMAIN } from '../constants';
+import { HTTP_METHODS } from '../constants';
 
-export async function callAPI(
-	path: string,
-	params: string,
-	body = { method: HTTP_METHODS.GET },
-	id = ''
-) {
-	const result = await fetch(`${DOMAIN}${path}${id}${params}`, body);
+export async function callAPI(URL: string, options = { method: HTTP_METHODS.GET }) {
+	const result = await fetch(URL, options);
 	return result.json();
 }

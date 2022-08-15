@@ -22,14 +22,17 @@ const TodoItem: FC<TodoItemProps> = ({ todo }) => {
 		dispatch(deleteTodoRequest(id));
 	}, [dispatch, id]);
 
-	const handleChangeEditText = (e: ChangeEvent<HTMLInputElement>) => {
-		setEditText(e.target.value);
-	};
+	const handleChangeEditText = useCallback(
+		(e: ChangeEvent<HTMLInputElement>) => {
+			setEditText(e.target.value);
+		},
+		[setEditText]
+	);
 
-	const handleSetEdit = () => {
+	const handleSetEdit = useCallback(() => {
 		setEditingMode(true);
 		setEditText(text);
-	};
+	}, [setEditingMode, setEditText, text]);
 
 	const updateTodo = useCallback(
 		(bodyContent: IBodyContent) => {

@@ -5,3 +5,5 @@ export default function actionCreator(actionName: string) {
 		FAIL: `${actionName}_FAIL`,
 	};
 }
+
+export const getURL = (selectedOption: any, id = '') => `${id}?filter=${selectedOption}`;

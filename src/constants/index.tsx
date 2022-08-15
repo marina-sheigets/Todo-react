@@ -1,7 +1,4 @@
-import actionCreator from '../utils';
-
-export const DOMAIN = 'http://localhost:3030/';
-export const FILTER_PARAM = '?filter=';
+export const TODOS_URL = 'http://localhost:3030/todos/';
 
 export const PATH = {
 	todos: 'todos/',
@@ -21,12 +18,3 @@ export const HTTP_METHODS = {
 	PATCH: 'PATCH',
 	OPTIONS: 'OPTIONS',
 };
-
-export const GET_TODOS = actionCreator('GET_TODOS');
-export const SET_SELECTED = actionCreator('SET_SELECTED');
-
-export const UPDATE_TODO_REQUEST = 'UPDATE_TODO_REQUEST';
-export const ADD_TODO = 'ADD_TODO';
-export const DELETE_TODO = 'DELETE_TODO';
-export const CHANGE_TODO_STATUS = 'CHANGE_TODO_STATUS';
-export const CHANGE_TODO_COMPLETED = 'CHANGE_TODO_COMPLETED';

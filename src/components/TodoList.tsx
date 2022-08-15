@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTodosRequest } from '../redux/action-creators';
+import { getTodosRequest } from '../redux/action-creators';
 import TodoItem from './TodoItem';
 import Loader from './Loader/Loader';
 import { getError, getIsLoading, getTodos } from '../redux/selectors';
@@ -13,7 +13,7 @@ const TodoList: FC = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(setTodosRequest());
+		dispatch(getTodosRequest());
 	}, [dispatch]);
 
 	if (isLoading) {

@@ -1,14 +1,17 @@
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { setSelected, setTodosRequest } from '../redux/action-creators';
+import { setSelected, getTodosRequest } from '../redux/action-creators';
 
 const Filtering: FC = () => {
 	const dispatch = useDispatch();
 
-	const setFilter = (e: ChangeEvent<HTMLSelectElement>) => {
-		dispatch(setSelected(e.target.value));
-		dispatch(setTodosRequest());
-	};
+	const setFilter = useCallback(
+		(e: ChangeEvent<HTMLSelectElement>) => {
+			dispatch(setSelected(e.target.value));
+			dispatch(getTodosRequest());
+		},
+		[dispatch]
+	);
 	return (
 		<div className='filter-area'>
 			<select onChange={setFilter}>
