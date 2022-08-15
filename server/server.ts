@@ -3,13 +3,9 @@ import { MongoClient } from 'mongodb';
 import url from 'url';
 import { IBodyContent } from '../src/types';
 import { HTTP_METHODS, OPTIONS } from '../src/constants';
-
-const URL_MONGO =
-	'mongodb+srv://marinasheigets:mAIUIsJ4vVV08ZNy@cluster0.js7qmad.mongodb.net/?retryWrites=true&w=majority';
+import { URL_MONGO, DB_NAME, COLLECTION, PORT } from './constants';
 
 const client = new MongoClient(URL_MONGO);
-const DB_NAME = 'TodoApp';
-const COLLECTION = 'todos';
 
 client.connect();
 
@@ -66,7 +62,6 @@ async function changeStatusAll(bodyObject: IBodyContent, selectedOption: string)
 	return await getTodos(selectedOption);
 }
 
-const PORT = 3030;
 const server = http.createServer();
 
 function getID(req: any) {

@@ -1,16 +1,21 @@
 import express from 'express';
-import TodoSchema from './models/todoSchema';
+import mongoose from 'mongoose';
+import { URL_MONGO, PORT } from './constants';
+import TodosRouter from './routes/todosItems';
 
-const PORT = 8000;
 const app = express();
 
-app.use(express.urlencoded({ extended: true })); //for POST reqs
+//connect to mongoDB
+mongoose
+	.connect(URL_MONGO)
+	.then(() => console.log('Connected'))
+	.catch(console.log);
+
+app.use(express.json()); //for POST reqs
 app.set('view engine', 'ejs');
 
 app.listen(PORT, () => {
 	console.log(`Server is listening on port ${PORT}...`);
 });
 
-app.get('/', (req, res) => {});
-
-app.post;
+app.use('/todos', TodosRouter);

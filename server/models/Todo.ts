@@ -1,9 +1,10 @@
-import mongoose from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-const TodoSchema = new mongoose.Schema({
+const TodoSchema: any = new Schema({
 	id: {
 		type: Number,
 		required: true,
+		unique: true,
 	},
 	text: {
 		type: String,
@@ -15,4 +16,4 @@ const TodoSchema = new mongoose.Schema({
 	},
 });
 
-export default TodoSchema;
+export default model('Todo', TodoSchema);
