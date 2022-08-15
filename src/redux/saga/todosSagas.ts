@@ -1,29 +1,29 @@
 import { takeEvery, select, put, call } from 'redux-saga/effects';
 import {
 	GET_TODOS,
-	URL,
 	HTTP_METHODS,
 	DELETE_TODO,
 	ADD_TODO,
 	UPDATE_TODO_REQUEST,
 	CHANGE_TODO_COMPLETED,
 	CHANGE_TODO_STATUS,
+	PATH,
+	FILTER_PARAM,
 } from '../../constants';
 import { setTodosFail, setTodosRequest, setTodosSuccess } from '../action-creators';
 import { ResponseGenerator } from '../../types';
-
-async function callAPI(selectedOption: string, body = { method: HTTP_METHODS.GET }, id = '') {
-	const result = await fetch(`${URL}/${id}?filter=${selectedOption}`, {
-		...body,
-	});
-	return result.json();
-}
+import { callAPI } from '../../api';
 
 function* getTodosSaga(): any {
 	try {
 		const state = yield select();
-		const { selectedOption } = state.rootReducer;
-		const todos: ResponseGenerator = yield call(callAPI, selectedOption);
+		const { selectedOption } = state.todosReducer;
+		const todos: ResponseGenerator = yield call(
+			callAPI,
+			PATH.todos,
+			FILTER_PARAM + selectedOption
+		);
+
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -36,12 +36,19 @@ function* deleteTodoSaga(action: any) {
 	try {
 		yield put(setTodosRequest());
 		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.rootReducer;
+		const { selectedOption } = state.todosReducer;
 		const id = action.payload;
+
 		const requestOptions = {
 			method: HTTP_METHODS.DELETE,
 		};
-		const todos: ResponseGenerator = yield call(callAPI, selectedOption, requestOptions, id);
+		const todos: ResponseGenerator = yield call(
+			callAPI,
+			PATH.todos,
+			FILTER_PARAM + selectedOption,
+			requestOptions,
+			id
+		);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -54,13 +61,18 @@ function* addTodoSaga(action: any) {
 	try {
 		yield put(setTodosRequest());
 		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.rootReducer;
+		const { selectedOption } = state.todosReducer;
 		const title = action.payload;
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
 			body: JSON.stringify({ title }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, selectedOption, requestOptions);
+		const todos: ResponseGenerator = yield call(
+			callAPI,
+			PATH.todos,
+			FILTER_PARAM + selectedOption,
+			requestOptions
+		);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -73,13 +85,19 @@ function* updateTodoSaga(action: any) {
 	try {
 		yield put(setTodosRequest());
 		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.rootReducer;
+		const { selectedOption } = state.todosReducer;
 		const { id, title } = yield action.payload;
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ title }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, selectedOption, requestOptions, id);
+		const todos: ResponseGenerator = yield call(
+			callAPI,
+			PATH.todos,
+			FILTER_PARAM + selectedOption,
+			requestOptions,
+			id
+		);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -92,13 +110,19 @@ function* changeTodoStatusSaga(action: any) {
 	try {
 		yield put(setTodosRequest());
 		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.rootReducer;
+		const { selectedOption } = state.todosReducer;
 		const { id } = yield action.payload;
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ changeStatus: 'true' }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, selectedOption, requestOptions, id);
+		const todos: ResponseGenerator = yield call(
+			callAPI,
+			PATH.todos,
+			FILTER_PARAM + selectedOption,
+			requestOptions,
+			id
+		);
 
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
@@ -112,13 +136,18 @@ function* changeAllCompletedSaga(action: any) {
 	try {
 		yield put(setTodosRequest());
 		const state: ResponseGenerator = yield select();
-		const { selectedOption } = state.rootReducer;
+		const { selectedOption } = state.todosReducer;
 		const { active } = yield action.payload;
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ changeStatusAll: 'true', active }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, selectedOption, requestOptions);
+		const todos: ResponseGenerator = yield call(
+			callAPI,
+			PATH.todos,
+			FILTER_PARAM + selectedOption,
+			requestOptions
+		);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';

@@ -21,7 +21,7 @@ export function setTodosSuccess<T>(todos: T): IRootReducerAction<T> {
 
 export function setTodosFail<T>(error: T): IRootReducerAction<T> {
 	return {
-		type: GET_TODOS.SUCCESS,
+		type: GET_TODOS.FAIL,
 		payload: error,
 	};
 }

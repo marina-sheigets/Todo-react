@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
 	changeTodoStatusRequest,
@@ -13,49 +13,50 @@ interface TodoItemProps {
 
 const TodoItem: FC<TodoItemProps> = ({ todo }) => {
 	const [editingMode, setEditingMode] = useState(false);
-	const [editId, setEditId] = useState(0);
 	const [editText, setEditText] = useState('');
 
 	const { id, text, checked } = todo;
 	const dispatch = useDispatch();
 
-	const deleteTodo = () => /*  useCallback(() => */ {
-		dispatch(deleteTodoRequest(todo.id));
-	}; /* , []); */
+	const deleteTodo = useCallback(() => {
+		dispatch(deleteTodoRequest(id));
+	}, [dispatch, id]);
 
 	const handleChangeEditText = (e: ChangeEvent<HTMLInputElement>) => {
 		setEditText(e.target.value);
 	};
-	const handleEditTodo = () => {
+
+	const handleSetEdit = () => {
+		setEditingMode(true);
+		setEditText(text);
+	};
+
+	const updateTodo = useCallback(
+		(bodyContent: IBodyContent) => {
+			dispatch(updateTodoRequest(bodyContent));
+		},
+		[dispatch]
+	);
+
+	const handleEditTodo = useCallback(() => {
 		if (editText.trim().length !== 0) {
 			updateTodo({
-				id: editId,
+				id: id,
 				title: editText,
 			});
 		}
 		setEditingMode(false);
-	};
+	}, [id, editText, updateTodo]);
 
-	const handleCancelTodo = () => {
-		updateTodo({ id: editId, title: text });
+	const handleCancelTodo = useCallback(() => {
+		updateTodo({ id: id, title: text });
 		setEditingMode(false);
 		setEditText(text);
-	};
+	}, [id, text, updateTodo]);
 
-	const updateTodo = (bodyContent: IBodyContent) => {
-		dispatch(updateTodoRequest(bodyContent));
-	};
-
-	const handleChangeStatus = () => {
+	const handleChangeStatus = useCallback(() => {
 		dispatch(changeTodoStatusRequest({ id }));
-	};
-
-	const handleSetEdit = () => {
-		console.log('work');
-		setEditingMode(true);
-		setEditId(id);
-		setEditText(text);
-	};
+	}, [id, dispatch]);
 
 	return (
 		<>

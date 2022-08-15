@@ -31,5 +31,5 @@ export interface IBodyContent {
 
 // for yield
 export interface ResponseGenerator {
-	rootReducer?: any;
+	todosReducer?: any;
 }

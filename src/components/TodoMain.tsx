@@ -1,7 +1,7 @@
-import { ChangeEvent, FC, FormEvent, useState } from 'react';
+import { ChangeEvent, FC, FormEvent, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTodoRequest, changeAllCompletedRequest } from '../redux/action-creators';
-import { RootState } from '../redux/store';
+import { getTodos } from '../redux/selectors';
 import { Todo } from '../types';
 import Filtering from './Filtering';
 import TodoList from './TodoList';
@@ -9,30 +9,31 @@ import TodoList from './TodoList';
 const TodoMain: FC = () => {
 	const [newTodoText, setNewTodoText] = useState('');
 
-	const todos = useSelector((state: RootState) => state.rootReducer.todos);
+	const todos = useSelector(getTodos);
 	const dispatch = useDispatch();
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setNewTodoText(e.target.value);
 	};
 
-	const addTodo = (e: FormEvent) => {
-		e.preventDefault();
+	const addTodo = useCallback(
+		(e: FormEvent) => {
+			e.preventDefault();
 
-		if (newTodoText.trim().length !== 0) {
-			dispatch(addTodoRequest(newTodoText));
-			setNewTodoText('');
-		}
-	};
+			if (newTodoText.trim().length !== 0) {
+				dispatch(addTodoRequest(newTodoText));
+				setNewTodoText('');
+			}
+		},
+		[newTodoText, dispatch]
+	);
 
-	const isAllCompleted = (): boolean => {
-		return todos.every((elem: Todo) => elem.checked);
-	};
+	const isAllCompleted = useMemo(() => todos.every((elem: Todo) => elem.checked), [todos]);
 
-	const changeAllCompleted = () => {
-		const isActive = isAllCompleted();
+	const changeAllCompleted = useCallback(() => {
+		const isActive = isAllCompleted;
 		dispatch(changeAllCompletedRequest({ active: isActive }));
-	};
+	}, [dispatch, isAllCompleted]);
 
 	return (
 		<>
@@ -40,7 +41,7 @@ const TodoMain: FC = () => {
 			<form className='todo-form' onSubmit={addTodo}>
 				<button
 					type='button'
-					className={`activate ${isAllCompleted()}`}
+					className={`activate ${isAllCompleted}`}
 					onClick={changeAllCompleted}>
 					☑
 				</button>

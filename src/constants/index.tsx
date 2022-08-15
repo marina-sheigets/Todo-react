@@ -1,6 +1,12 @@
 import actionCreator from '../utils';
 
-export const URL = 'http://localhost:3030/todos';
+export const DOMAIN = 'http://localhost:3030/';
+export const FILTER_PARAM = '?filter=';
+
+export const PATH = {
+	todos: 'todos/',
+	//user:"users"
+};
 
 export const OPTIONS = {
 	all: 'All',
