@@ -7,14 +7,14 @@ import {
 	CHANGE_TODO_COMPLETED,
 	CHANGE_TODO_STATUS,
 } from '../constants';
-import { PATH, HTTP_METHODS, TODOS_URL } from '../../constants';
+import { HTTP_METHODS, TODOS_URL } from '../../constants';
 import { setTodosFail, getTodosRequest, setTodosSuccess } from '../action-creators';
-import { ResponseGenerator } from '../../types';
+import { IAction, ResponseGenerator } from '../../types';
 import { callAPI } from '../../api';
 import { getSelectedOption } from '../selectors';
 import { getURL } from '../../utils';
 
-function* getTodosSaga(): any {
+function* getTodosSaga() {
 	try {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const URL = getURL(selectedOption);
@@ -28,7 +28,7 @@ function* getTodosSaga(): any {
 	}
 }
 
-function* deleteTodoSaga(action: any) {
+function* deleteTodoSaga(action: IAction) {
 	try {
 		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
@@ -48,15 +48,15 @@ function* deleteTodoSaga(action: any) {
 	}
 }
 
-function* addTodoSaga(action: any) {
+function* addTodoSaga(action: IAction) {
 	try {
 		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const title = action.payload;
 		const URL = getURL(selectedOption);
-
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ title }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
@@ -64,20 +64,21 @@ function* addTodoSaga(action: any) {
 	} catch (error) {
 		let message = 'Unknown Error';
 		if (error instanceof Error) message = error.message;
+		console.log(message);
 		yield put(setTodosFail(message));
 	}
 }
 
-function* updateTodoSaga(action: any) {
+function* updateTodoSaga(action: IAction) {
 	try {
 		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { id, title } = yield action.payload;
-
 		const URL = getURL(selectedOption, id);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ title }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
@@ -89,7 +90,7 @@ function* updateTodoSaga(action: any) {
 	}
 }
 
-function* changeTodoStatusSaga(action: any) {
+function* changeTodoStatusSaga(action: IAction) {
 	try {
 		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
@@ -98,6 +99,7 @@ function* changeTodoStatusSaga(action: any) {
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ changeStatus: 'true' }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
@@ -110,17 +112,18 @@ function* changeTodoStatusSaga(action: any) {
 	}
 }
 
-function* changeAllCompletedSaga(action: any) {
+function* changeAllCompletedSaga(action: IAction) {
 	try {
 		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { active } = yield action.payload;
-
+		console.log(active);
 		const URL = getURL(selectedOption);
 		console.log(TODOS_URL + URL);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ changeStatusAll: 'true', active }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);

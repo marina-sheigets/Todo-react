@@ -32,6 +32,7 @@ const TodoMain: FC = () => {
 
 	const changeAllCompleted = useCallback(() => {
 		const isActive = isAllCompleted;
+		console.log(isActive);
 		dispatch(changeAllCompletedRequest({ active: isActive }));
 	}, [dispatch, isAllCompleted]);
 
