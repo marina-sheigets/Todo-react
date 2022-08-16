@@ -32,8 +32,6 @@ export const addTodo = async (req: any, res: any) => {
 			text: title,
 			checked: false,
 		});
-		console.log(req.body);
-		console.log('add method');
 		await newTodo.save();
 
 		res.send(await fetchTodos(req.query.filter));
@@ -56,9 +54,8 @@ export const deleteTodo = async (req: any, res: any) => {
 export const updateTodo = async (req: any, res: any) => {
 	try {
 		const { id } = req.params;
+		const { changeStatus, title, active } = req.body;
 		console.log(req.body);
-		console.log(req.params);
-		const { changeStatus, title, isAllCompleted } = req.body;
 		if (changeStatus) {
 			const todo: any = await Todo.findOne({ id });
 			todo.checked = !todo.checked;
@@ -66,7 +63,7 @@ export const updateTodo = async (req: any, res: any) => {
 		} else if (title) {
 			await Todo.updateOne({ id }, { text: title });
 		} else {
-			const status = isAllCompleted ? false : true;
+			let status = active ? false : true;
 			await Todo.updateMany({ checked: status });
 		}
 		res.send(await fetchTodos(req.query.filter));

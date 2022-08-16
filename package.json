@@ -30,7 +30,7 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"serve": "nodemon server/express.ts"
+		"express": "nodemon server/express.ts"
 	},
 	"eslintConfig": {
 		"extends": [

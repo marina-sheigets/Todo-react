@@ -119,7 +119,6 @@ function* changeAllCompletedSaga(action: IAction) {
 		const { active } = yield action.payload;
 		console.log(active);
 		const URL = getURL(selectedOption);
-		console.log(TODOS_URL + URL);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
