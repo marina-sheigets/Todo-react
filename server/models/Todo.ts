@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const TodoSchema: any = new Schema({
 	id: {
-		type: Number,
+		type: String,
 		required: true,
 		unique: true,
 	},
@@ -12,6 +12,10 @@ const TodoSchema: any = new Schema({
 	},
 	checked: {
 		type: Boolean,
+		required: true,
+	},
+	userID: {
+		type: String,
 		required: true,
 	},
 });

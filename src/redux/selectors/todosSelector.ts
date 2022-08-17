@@ -1,4 +1,4 @@
-import { RootState } from './../store';
+import { RootState } from '../store';
 
 export const getTodos = (state: RootState) => state.todos.todosList;
 export const getError = (state: RootState) => state.todos.error;

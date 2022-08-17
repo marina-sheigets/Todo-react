@@ -4,7 +4,7 @@ import {
 	changeTodoStatusRequest,
 	deleteTodoRequest,
 	updateTodoRequest,
-} from '../redux/action-creators';
+} from '../redux/action-creators/todoActions';
 import { IBodyContent, Todo } from '../types';
 
 interface TodoItemProps {

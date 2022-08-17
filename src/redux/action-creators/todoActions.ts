@@ -1,4 +1,4 @@
-import { IRootReducerAction } from './../../types/index';
+import { IRootReducerAction } from '../../types/index';
 import {
 	DELETE_TODO,
 	GET_TODOS,

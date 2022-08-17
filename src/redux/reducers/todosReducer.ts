@@ -1,15 +1,15 @@
 import { GET_TODOS, SET_TODOS, SET_SELECTED } from '../constants';
 import { OPTIONS } from '../../constants';
-import { IAction, IRootReducerState } from '../../types';
+import { IAction, ITodosReducerState } from '../../types';
 
-const initialState: IRootReducerState = {
+const initialState: ITodosReducerState = {
 	todosList: [],
 	selectedOption: OPTIONS.all,
 	isLoading: false,
 	error: null,
 };
 
-const todosReducer = (state = initialState, action: IAction): IRootReducerState => {
+const todosReducer = (state = initialState, action: IAction): ITodosReducerState => {
 	switch (action.type) {
 		case GET_TODOS.REQUEST:
 			return { ...state, isLoading: true };

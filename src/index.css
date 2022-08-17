@@ -4,14 +4,15 @@
 	padding: 0;
 }
 
-body {
+#root {
 	min-height: 100vh;
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	background-color: grey;
 }
-#root {
+.todo-app {
 	background-color: aliceblue;
 	min-height: 400px;
 	width: 50%;
@@ -128,14 +129,14 @@ label.true {
 }
 
 @media screen and (max-width: 650px) {
-	#root {
+	.todo-app {
 		width: 80%;
 	}
 }
 
 @media screen and (max-width: 370px) {
-	#root {
-		width: 100%;
+	.todo-app {
+		width: 98%;
 	}
 
 	.edit input {

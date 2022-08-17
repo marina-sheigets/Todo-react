@@ -1,9 +1,9 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTodosRequest } from '../redux/action-creators';
+import { getTodosRequest } from '../redux/action-creators/todoActions';
 import TodoItem from './TodoItem';
 import Loader from './Loader/Loader';
-import { getError, getIsLoading, getTodos } from '../redux/selectors';
+import { getError, getIsLoading, getTodos } from '../redux/selectors/todosSelector';
 
 const TodoList: FC = () => {
 	const todos = useSelector(getTodos);

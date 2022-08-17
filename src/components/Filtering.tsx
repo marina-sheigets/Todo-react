@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { setSelected, getTodosRequest } from '../redux/action-creators';
+import { setSelected, getTodosRequest } from '../redux/action-creators/todoActions';
 
 const Filtering: FC = () => {
 	const dispatch = useDispatch();

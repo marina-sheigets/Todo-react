@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.get('/', getTodos);
+router.get('/:userID', getTodos);
 router.post('/', addTodo);
 router.delete('/:id', deleteTodo);
 router.patch('/:id?', updateTodo);

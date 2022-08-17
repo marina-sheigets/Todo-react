@@ -4,7 +4,7 @@ export interface Todo {
 	checked: boolean;
 }
 
-export interface IRootReducerState {
+export interface ITodosReducerState {
 	todosList: Todo[];
 	selectedOption: string;
 	isLoading: boolean;

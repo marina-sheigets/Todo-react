@@ -8,17 +8,20 @@ import {
 	CHANGE_TODO_STATUS,
 } from '../constants';
 import { HTTP_METHODS, TODOS_URL } from '../../constants';
-import { setTodosFail, getTodosRequest, setTodosSuccess } from '../action-creators';
+import { setTodosFail, setTodosSuccess } from '../action-creators/todoActions';
 import { IAction, ResponseGenerator } from '../../types';
 import { callAPI } from '../../api';
-import { getSelectedOption } from '../selectors';
+import { getSelectedOption } from '../selectors/todosSelector';
 import { getURL } from '../../utils';
+import { getUserID } from '../selectors/authSelector';
+import { AuthResponse } from '../../types/auth-types';
 
 function* getTodosSaga() {
 	try {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
-		const URL = getURL(selectedOption);
-		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL);
+		const userID: AuthResponse = yield select(getUserID);
+		const URL = getURL(selectedOption, String(userID));
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + '/' + URL);
 
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
@@ -30,16 +33,20 @@ function* getTodosSaga() {
 
 function* deleteTodoSaga(action: IAction) {
 	try {
-		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const id = action.payload;
+
 		const URL = getURL(selectedOption, id);
+		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.DELETE,
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ userID: userID }),
 		};
 
-		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + '/' + URL, requestOptions);
+		console.log(todos);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -50,14 +57,15 @@ function* deleteTodoSaga(action: IAction) {
 
 function* addTodoSaga(action: IAction) {
 	try {
-		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const title = action.payload;
 		const URL = getURL(selectedOption);
+		const userID: AuthResponse = yield select(getUserID);
+
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ title }),
+			body: JSON.stringify({ title, userID }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
 		yield put(setTodosSuccess(todos));
@@ -71,17 +79,17 @@ function* addTodoSaga(action: IAction) {
 
 function* updateTodoSaga(action: IAction) {
 	try {
-		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { id, title } = yield action.payload;
 		const URL = getURL(selectedOption, id);
+		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ title }),
+			body: JSON.stringify({ title, userID }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + '/' + URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -92,17 +100,17 @@ function* updateTodoSaga(action: IAction) {
 
 function* changeTodoStatusSaga(action: IAction) {
 	try {
-		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { id } = yield action.payload;
 		const URL = getURL(selectedOption, id);
+		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ changeStatus: 'true' }),
+			body: JSON.stringify({ changeStatus: 'true', userID }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + '/' + URL, requestOptions);
 
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
@@ -114,16 +122,15 @@ function* changeTodoStatusSaga(action: IAction) {
 
 function* changeAllCompletedSaga(action: IAction) {
 	try {
-		yield put(getTodosRequest());
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { active } = yield action.payload;
-		console.log(active);
 		const URL = getURL(selectedOption);
+		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ changeStatusAll: 'true', active }),
+			body: JSON.stringify({ changeStatusAll: 'true', isAllCompleted: active, userID }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
 		yield put(setTodosSuccess(todos));

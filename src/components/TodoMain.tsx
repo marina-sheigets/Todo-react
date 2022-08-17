@@ -1,9 +1,10 @@
 import { ChangeEvent, FC, FormEvent, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTodoRequest, changeAllCompletedRequest } from '../redux/action-creators';
-import { getTodos } from '../redux/selectors';
+import { addTodoRequest, changeAllCompletedRequest } from '../redux/action-creators/todoActions';
+import { getTodos } from '../redux/selectors/todosSelector';
 import { Todo } from '../types';
 import Filtering from './Filtering';
+import Header from './Header/Header';
 import TodoList from './TodoList';
 
 const TodoMain: FC = () => {
@@ -31,33 +32,34 @@ const TodoMain: FC = () => {
 	const isAllCompleted = useMemo(() => todos.every((elem: Todo) => elem.checked), [todos]);
 
 	const changeAllCompleted = useCallback(() => {
-		const isActive = isAllCompleted;
-		console.log(isActive);
-		dispatch(changeAllCompletedRequest({ active: isActive }));
+		dispatch(changeAllCompletedRequest({ active: isAllCompleted }));
 	}, [dispatch, isAllCompleted]);
 
 	return (
 		<>
-			<h1 className='main-h1'>ToDo List</h1>
-			<form className='todo-form' onSubmit={addTodo}>
-				<button
-					type='button'
-					className={`activate ${isAllCompleted}`}
-					onClick={changeAllCompleted}>
-					☑
-				</button>
-				<input
-					type='text'
-					value={newTodoText}
-					onChange={handleInputChange}
-					className='todo-input'
-					placeholder='Enter todo task'
-				/>
-				<input type='submit' className='submit' value='Add' />
-			</form>
+			<Header />
+			<div className='todo-app'>
+				<h1 className='main-h1'>ToDo List</h1>
+				<form className='todo-form' onSubmit={addTodo}>
+					<button
+						type='button'
+						className={`activate ${isAllCompleted}`}
+						onClick={changeAllCompleted}>
+						☑
+					</button>
+					<input
+						type='text'
+						value={newTodoText}
+						onChange={handleInputChange}
+						className='todo-input'
+						placeholder='Enter todo task'
+					/>
+					<input type='submit' className='submit' value='Add' />
+				</form>
 
-			<TodoList />
-			<Filtering />
+				<TodoList />
+				<Filtering />
+			</div>
 		</>
 	);
 };
