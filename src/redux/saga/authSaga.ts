@@ -7,6 +7,7 @@ import { setUser } from '../action-creators/authActions';
 
 function* registrationSaga(action: IAction) {
 	try {
+		console.log(action);
 		const { email, username, password } = yield action.payload;
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
@@ -28,7 +29,7 @@ function* registrationSaga(action: IAction) {
 			yield put(setUser({ user, status }));
 		}
 	} catch (err: any) {
-		console.log(err.message);
+		console.log(JSON.stringify(err));
 	}
 }
 

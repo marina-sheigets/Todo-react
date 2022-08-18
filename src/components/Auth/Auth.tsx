@@ -36,7 +36,7 @@ function Auth() {
 
 	const register = useCallback(() => {
 		dispatch(registerUserRequest({ email, username, password }));
-	}, []);
+	}, [dispatch, email, username, password]);
 
 	const loginUser = () => {
 		dispatch(loginUserRequest({ email, password }));

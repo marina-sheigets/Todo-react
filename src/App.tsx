@@ -8,7 +8,7 @@ import { checkUserAuth } from './redux/action-creators/authActions';
 function App() {
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch(checkUserAuth());
+		//dispatch(checkUserAuth());
 	}, []);
 
 	const isAuth = useSelector(getIsAuth);
