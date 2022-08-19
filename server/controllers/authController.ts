@@ -27,8 +27,8 @@ class AuthController {
 
 	async login(req: any, res: any, next: any) {
 		try {
-			const { email, username, password } = req.body;
-			const userData = await userService.login(email, username, password);
+			const { email, password } = req.body;
+			const userData = await userService.login(email, password);
 			res.cookie(REFRESH_TOKEN, userData.refreshToken, {
 				expires: dayjs().add(30, 'days').toDate(),
 				httpOnly: true,
@@ -58,6 +58,7 @@ class AuthController {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
 				httpOnly: false,
 			});
+
 			return res.json(userData);
 		} catch (err) {
 			next(err);

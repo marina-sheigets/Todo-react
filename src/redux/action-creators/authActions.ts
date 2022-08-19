@@ -1,5 +1,12 @@
 import { IRootReducerAction } from '../../types';
-import { GET_USER_AUTH, LOGIN_USER, LOGOUT, REGISTER_USER, SET_USER } from '../constants';
+import {
+	CLEAR_ERROR,
+	GET_USER_AUTH,
+	LOGIN_USER,
+	LOGOUT,
+	REGISTER_USER,
+	SET_USER,
+} from '../constants';
 
 export function registerUserRequest<T>(bodyContent: T): IRootReducerAction<T> {
 	return {
@@ -38,5 +45,11 @@ export function checkUserAuth<T>(): IRootReducerAction<T> {
 export function logoutUser<T>(): IRootReducerAction<T> {
 	return {
 		type: LOGOUT.REQUEST,
+	};
+}
+
+export function clearError<T>(): IRootReducerAction<T> {
+	return {
+		type: CLEAR_ERROR.REQUEST,
 	};
 }

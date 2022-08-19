@@ -34,9 +34,20 @@
 	color: aliceblue;
 }
 
-@media screen and (max-width: 650px) {
+.action {
+	border: none;
+	background: aliceblue;
+	color: blue;
+	cursor: pointer;
+}
+
+.login-form p {
+	text-align: center;
+}
+
+@media screen and (max-width: 790px) {
 	.login-form {
-		width: 80%;
+		width: 60%;
 	}
 }
 

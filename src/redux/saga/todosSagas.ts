@@ -22,8 +22,11 @@ function* getTodosSaga() {
 		const userID: AuthResponse = yield select(getUserID);
 		const TODOS_URL = getURL(selectedOption, String(userID));
 
-		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL);
+		const requestOptions = {
+			method: HTTP_METHODS.GET,
+		};
 
+		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';

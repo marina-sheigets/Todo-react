@@ -33,3 +33,13 @@ export interface IBodyContent {
 export interface ResponseGenerator {
 	todosReducer?: any;
 }
+
+//callApi
+export interface IOptions {
+	method?: string;
+	headers?: {
+		Authorization: string;
+		'Content-Type': string;
+	};
+	body?: IBodyContent;
+}

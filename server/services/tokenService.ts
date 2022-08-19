@@ -1,3 +1,4 @@
+import { scryptSync } from 'crypto';
 import jwt from 'jsonwebtoken';
 import Token from '../models/Token';
 
@@ -6,9 +7,11 @@ class TokenService {
 		const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, {
 			expiresIn: '10s',
 		});
-		const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, {
-			expiresIn: '30d',
-		});
+		const refreshToken = scryptSync(
+			process.env.JWT_REFRESH_SECRET as string,
+			'salt',
+			64
+		).toString('hex');
 
 		return {
 			accessToken,
@@ -45,7 +48,7 @@ class TokenService {
 			return null;
 		}
 	}
-
+	/* 
 	validateRefreshToken(token: string) {
 		try {
 			const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET as string);
@@ -53,7 +56,7 @@ class TokenService {
 		} catch (err) {
 			return null;
 		}
-	}
+	} */
 }
 
 export default new TokenService();

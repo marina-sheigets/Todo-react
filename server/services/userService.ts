@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import tokenService from './tokenService';
 import UserDTO from '../dtos/userDTO';
 import ApiError from '../exceptions/api-error';
+import { ObjectId } from 'mongodb';
 
 class UserService {
 	async registration(email: string, username: string, password: string) {
@@ -15,6 +16,7 @@ class UserService {
 
 		const userDTO = new UserDTO(user);
 		const tokens = tokenService.generateTokens({ ...userDTO });
+		console.log(userDTO.id);
 		await tokenService.saveToken(userDTO.id, tokens.refreshToken);
 
 		return {
@@ -23,8 +25,8 @@ class UserService {
 		};
 	}
 
-	async login(email: string, username: string, password: string) {
-		const candidate = await User.findOne({ email, username });
+	async login(email: string, password: string) {
+		const candidate = await User.findOne({ email });
 		if (!candidate) {
 			throw ApiError.BadRequest('User was not found');
 		}
@@ -52,13 +54,14 @@ class UserService {
 		if (!refreshToken) {
 			throw ApiError.UnathorizedError();
 		}
-		const userData: any = tokenService.validateRefreshToken(refreshToken);
+		//const userData: any = tokenService.validateRefreshToken(refreshToken);
+
 		const foundToken = await tokenService.findToken(refreshToken);
-		if (!userData || !foundToken) {
+		if (!foundToken) {
 			throw ApiError.UnathorizedError();
 		}
-		const user = await User.findById(userData.id);
-
+		const user = await User.findById(foundToken.user);
+		console.log(user);
 		const userDTO = new UserDTO(user);
 		const tokens = tokenService.generateTokens({ ...userDTO });
 		await tokenService.saveToken(userDTO.id, tokens['refreshToken']);

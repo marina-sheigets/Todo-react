@@ -1,5 +1,5 @@
 import { IUser } from '../../types/auth-types';
-import { REGISTER_USER, SET_USER } from '../constants';
+import { CLEAR_ERROR, LOGOUT, SET_USER } from '../constants';
 
 interface IAuthReducerState {
 	user: IUser;
@@ -18,9 +18,10 @@ const authReducer = (state = initialState, action: any): IAuthReducerState => {
 			return { ...state, isAuth: true, user: { ...action.payload.user } };
 		case SET_USER.FAIL:
 			return { ...state, error: action.payload.errorMessage };
-		case 'LOGOUT_REQUEST':
+		case LOGOUT.REQUEST:
 			return { ...state, isAuth: false, user: {} };
-
+		case CLEAR_ERROR.REQUEST:
+			return { ...state, error: '' };
 		default:
 			return state;
 	}
