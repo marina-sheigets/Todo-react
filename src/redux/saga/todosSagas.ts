@@ -41,7 +41,6 @@ function* deleteTodoSaga(action: IAction) {
 
 		const requestOptions = {
 			method: HTTP_METHODS.DELETE,
-			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ userID: userID }),
 		};
 
@@ -64,7 +63,6 @@ function* addTodoSaga(action: IAction) {
 
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
-			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ title, userID }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);
@@ -86,7 +84,6 @@ function* updateTodoSaga(action: IAction) {
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
-			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ title, userID }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + '/' + URL, requestOptions);
@@ -107,11 +104,10 @@ function* changeTodoStatusSaga(action: IAction) {
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
-			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ changeStatus: 'true', userID }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + '/' + URL, requestOptions);
-
+		console.log(todos);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -129,7 +125,6 @@ function* changeAllCompletedSaga(action: IAction) {
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
-			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ changeStatusAll: 'true', isAllCompleted: active, userID }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL + URL, requestOptions);

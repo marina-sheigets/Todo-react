@@ -38,9 +38,9 @@ function Auth() {
 		dispatch(registerUserRequest({ email, username, password }));
 	}, [dispatch, email, username, password]);
 
-	const loginUser = () => {
-		dispatch(loginUserRequest({ email, password }));
-	};
+	const loginUser = useCallback(() => {
+		dispatch(loginUserRequest({ email, username, password }));
+	}, [email, password, dispatch, username]);
 
 	const isAllEmty = useMemo(() => {
 		if (

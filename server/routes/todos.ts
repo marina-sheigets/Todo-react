@@ -1,11 +1,12 @@
-import { addTodo, deleteTodo, updateTodo, getTodos } from '../controllers/todosController';
+import TodosController from '../controllers/todosController';
 import { Router } from 'express';
+import authMiddleware from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.get('/:userID', getTodos);
-router.post('/', addTodo);
-router.delete('/:id', deleteTodo);
-router.patch('/:id?', updateTodo);
+router.get('/:userID', authMiddleware, TodosController.getTodos);
+router.post('/', authMiddleware, TodosController.addTodo);
+router.delete('/:id', authMiddleware, TodosController.deleteTodo);
+router.patch('/:id?', authMiddleware, TodosController.updateTodo);
 
 export default router;

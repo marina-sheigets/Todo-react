@@ -25,3 +25,22 @@
 	height: 2rem;
 	cursor: pointer;
 }
+
+@media screen and (max-width: 650px) {
+	.login-form {
+		width: 80%;
+	}
+}
+
+@media screen and (max-width: 370px) {
+	.login-form {
+		width: 98%;
+	}
+
+	/* .edit input {
+		flex: 1;
+	}
+	.edit .cancel {
+		flex: 5;
+	} */
+}

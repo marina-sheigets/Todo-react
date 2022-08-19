@@ -8,7 +8,9 @@ import { checkUserAuth } from './redux/action-creators/authActions';
 function App() {
 	const dispatch = useDispatch();
 	useEffect(() => {
-		//dispatch(checkUserAuth());
+		if (localStorage.getItem('token')) {
+			dispatch(checkUserAuth());
+		}
 	}, []);
 
 	const isAuth = useSelector(getIsAuth);

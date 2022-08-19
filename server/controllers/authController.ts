@@ -1,20 +1,23 @@
 import userService from '../services/userService';
 import { validationResult } from 'express-validator';
 import ApiError from '../exceptions/api-error';
+import { Request, Response } from 'express';
+import dayjs from 'dayjs';
+import { REFRESH_TOKEN } from '../constants';
 
-class authController {
-	async registration(req: any, res: any, next: any) {
+class AuthController {
+	async registration(req: Request, res: Response, next: any) {
 		try {
 			const errors: any = validationResult(req);
 			if (!errors.isEmpty()) {
 				return next(ApiError.BadRequest('Validation error', errors.array()));
 			}
-			console.log(req.body);
 			const { email, username, password } = req.body;
 			const userData = await userService.registration(email, username, password);
-			res.cookie('refreshToken', userData.refreshToken, {
-				maxAge: 30 * 24 * 60 * 60 * 1000,
-				httpOnly: false,
+			console.log(userData.refreshToken);
+			res.cookie(REFRESH_TOKEN, userData.refreshToken, {
+				expires: dayjs().add(30, 'days').toDate(),
+				httpOnly: true,
 			});
 			return res.json(userData);
 		} catch (err) {
@@ -25,10 +28,10 @@ class authController {
 
 	async login(req: any, res: any, next: any) {
 		try {
-			const { email, password } = req.body;
-			const userData = await userService.login(email, password);
-			res.cookie('refreshToken', userData.refreshToken, {
-				maxAge: 30 * 24 * 60 * 60 * 1000,
+			const { email, username, password } = req.body;
+			const userData = await userService.login(email, username, password);
+			res.cookie(REFRESH_TOKEN, userData.refreshToken, {
+				expires: dayjs().add(30, 'days').toDate(),
 				httpOnly: true,
 			});
 			console.log(res.cookie);
@@ -42,38 +45,28 @@ class authController {
 		try {
 			const { refreshToken } = req.cookies;
 			const token = await userService.logout(refreshToken);
-			res.clearCookie('refreshToken');
+			localStorage.removeItem('token');
 			return res.json(token);
 		} catch (err) {
 			next(err);
 		}
 	}
 
-	async refresh(req: any, res: any, next: any) {
+	async refresh(req: Request, res: Response, next: any) {
 		try {
-			console.log('refresh ');
 			const { refreshToken } = req.cookies;
-			console.log(res.cookies);
+			console.log(req.cookies);
 			const userData = await userService.refresh(refreshToken);
-			res.cookie('refreshToken', userData.refreshToken, {
+			console.log(userData);
+			res.cookie(REFRESH_TOKEN, userData.refreshToken, {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
-				httpOnly: true,
+				httpOnly: false,
 			});
 			return res.json(userData);
 		} catch (err) {
 			next(err);
 		}
 	}
-
-	async getUsers(req: any, res: any, next: any) {
-		try {
-			const users = await userService.getAllUsers();
-			return res.json(users);
-		} catch (err) {
-			next(err);
-			res.status(400).json(err);
-		}
-	}
 }
 
-export default new authController();
+export default new AuthController();

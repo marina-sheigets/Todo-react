@@ -24,8 +24,8 @@ class UserService {
 		};
 	}
 
-	async login(email: any, password: any) {
-		const candidate = await User.findOne({ email });
+	async login(email: string, username: string, password: string) {
+		const candidate = await User.findOne({ email, username });
 		if (!candidate) {
 			throw ApiError.BadRequest('User was not found');
 		}
@@ -36,7 +36,7 @@ class UserService {
 
 		const userDTO = new UserDTO(candidate);
 		const tokens = tokenService.generateTokens({ ...userDTO });
-		await tokenService.saveToken(userDTO.id, tokens.refreshToken);
+		await tokenService.saveToken(userDTO.id, tokens['refreshToken']);
 
 		return {
 			...tokens,
@@ -62,17 +62,12 @@ class UserService {
 
 		const userDTO = new UserDTO(user);
 		const tokens = tokenService.generateTokens({ ...userDTO });
-		await tokenService.saveToken(userDTO.id, tokens.refreshToken);
+		await tokenService.saveToken(userDTO.id, tokens['refreshToken']);
 
 		return {
 			...tokens,
 			user: userDTO,
 		};
-	}
-
-	async getAllUsers() {
-		const users = await User.find();
-		return users;
 	}
 }
 

@@ -9,3 +9,6 @@ export const ADD_TODO = actionCreator('ADD_TODO');
 export const DELETE_TODO = actionCreator('DELETE_TODO');
 export const CHANGE_TODO_STATUS = actionCreator('CHANGE_TODO_STATUS');
 export const CHANGE_TODO_COMPLETED = actionCreator('CHANGE_TODO_COMPLETED');
+
+export const REGISTER_USER = actionCreator('REGISTER_USER');
+export const SET_USER = actionCreator('SET_USER');

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import authController from '../controllers/authController';
+import AuthController from '../controllers/authController';
 import { body } from 'express-validator';
 import authMiddleware from '../middleware/authMiddleware';
 
@@ -10,12 +10,11 @@ router.post(
 	body('email').isEmail(),
 	body('password').isLength({ min: 3, max: 32 }),
 	body('username').isLength({ min: 3, max: 32 }),
-	authController.registration
+	AuthController.registration
 );
-router.post('/login', authController.login);
-router.post('/logout', authController.logout);
+router.post('/login', AuthController.login);
+router.post('/logout', AuthController.logout);
 
-router.get('/users', authMiddleware, authController.getUsers);
-router.get('/refresh', authController.refresh);
+router.get('/refresh', AuthController.refresh);
 
 export default router;

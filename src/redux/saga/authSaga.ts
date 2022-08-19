@@ -3,15 +3,13 @@ import { callAPI } from '../../api';
 import { AUTH_PATH, AUTH_URL, HTTP_METHODS } from '../../constants';
 import { IAction } from '../../types';
 import { AuthResponse } from '../../types/auth-types';
-import { setUser } from '../action-creators/authActions';
+import { setUser, setUserFail } from '../action-creators/authActions';
 
 function* registrationSaga(action: IAction) {
 	try {
-		console.log(action);
 		const { email, username, password } = yield action.payload;
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
-			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, username, password }),
 		};
 
@@ -23,8 +21,8 @@ function* registrationSaga(action: IAction) {
 		console.log(userData);
 		const { user, status } = userData;
 
-		if (status) {
-			console.log(status);
+		if (status === 400) {
+			yield put(setUserFail({ errorMessage: 'User with such email exists ' }));
 		} else {
 			yield put(setUser({ user, status }));
 		}
@@ -35,11 +33,10 @@ function* registrationSaga(action: IAction) {
 
 function* loginSaga(action: IAction) {
 	try {
-		const { email, password } = yield action.payload;
+		const { email, username, password } = yield action.payload;
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password }),
+			body: JSON.stringify({ email, username, password }),
 		};
 
 		const userData: AuthResponse = yield call(
@@ -52,7 +49,7 @@ function* loginSaga(action: IAction) {
 		const { user, status } = userData;
 
 		if (status) {
-			console.log(status);
+			console.log(userData);
 		} else {
 			yield put(setUser({ user, status }));
 		}
@@ -76,17 +73,13 @@ function* logoutSaga() {
 
 function* checkAuthSaga() {
 	try {
-		const requestOptions = {
-			method: HTTP_METHODS.GET,
-		};
-		const response: AuthResponse = yield call(
-			callAPI,
-			AUTH_URL + AUTH_PATH.refresh,
-			requestOptions
-		);
-		console.log(response);
+		const response: AuthResponse = yield call(callAPI, AUTH_URL + AUTH_PATH.refresh);
+
+		localStorage.setItem('token', response.accessToken);
+		const { user, status } = response;
+		yield put(setUser({ user, status }));
 	} catch (e) {
-		console.log(JSON.stringify(e));
+		console.log(typeof e);
 	}
 }
 
