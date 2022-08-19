@@ -1,9 +1,10 @@
 import { call, put, takeEvery } from '@redux-saga/core/effects';
 import { callAPI } from '../../api';
-import { AUTH_PATH, AUTH_URL, HTTP_METHODS } from '../../constants';
+import { AUTH_PATH, AUTH_URL, BASE_URL, HTTP_METHODS } from '../../constants';
 import { IAction } from '../../types';
 import { AuthResponse } from '../../types/auth-types';
 import { setUser, setUserFail } from '../action-creators/authActions';
+import { GET_USER_AUTH, LOGIN_USER, LOGOUT, REGISTER_USER } from '../constants';
 
 function* registrationSaga(action: IAction) {
 	try {
@@ -15,10 +16,9 @@ function* registrationSaga(action: IAction) {
 
 		const userData: AuthResponse = yield call(
 			callAPI,
-			AUTH_URL + AUTH_PATH.registration,
+			BASE_URL + AUTH_PATH.registration,
 			requestOptions
 		);
-		console.log(userData);
 		const { user, status } = userData;
 
 		if (status === 400) {
@@ -41,20 +41,15 @@ function* loginSaga(action: IAction) {
 
 		const userData: AuthResponse = yield call(
 			callAPI,
-			AUTH_URL + AUTH_PATH.login,
+			BASE_URL + AUTH_PATH.login,
 			requestOptions
 		);
 		localStorage.setItem('token', userData.accessToken);
-
 		const { user, status } = userData;
 
-		if (status) {
-			console.log(userData);
-		} else {
-			yield put(setUser({ user, status }));
-		}
+		yield put(setUser({ user, status }));
 	} catch (err) {
-		console.log(err);
+		yield put(setUserFail({ errorMessage: 'Data is incorrect' }));
 	}
 }
 
@@ -64,7 +59,7 @@ function* logoutSaga() {
 			method: HTTP_METHODS.POST,
 		};
 
-		yield call(callAPI, AUTH_URL + AUTH_PATH.logout, requestOptions);
+		yield call(callAPI, BASE_URL + AUTH_PATH.logout, requestOptions);
 		localStorage.removeItem('token');
 	} catch (err) {
 		console.log(err);
@@ -73,21 +68,21 @@ function* logoutSaga() {
 
 function* checkAuthSaga() {
 	try {
-		const response: AuthResponse = yield call(callAPI, AUTH_URL + AUTH_PATH.refresh);
+		const response: AuthResponse = yield call(callAPI, BASE_URL + AUTH_PATH.refresh);
 
 		localStorage.setItem('token', response.accessToken);
 		const { user, status } = response;
 		yield put(setUser({ user, status }));
 	} catch (e) {
-		console.log(typeof e);
+		console.log(e);
 	}
 }
 
 function* authWatcher() {
-	yield takeEvery('REGISTER_USER', registrationSaga);
-	yield takeEvery('LOGIN_USER', loginSaga);
-	yield takeEvery('GET_USER_AUTH', checkAuthSaga);
-	yield takeEvery('LOGOUT_REQUEST', logoutSaga);
+	yield takeEvery(REGISTER_USER.REQUEST, registrationSaga);
+	yield takeEvery(LOGIN_USER.REQUEST, loginSaga);
+	yield takeEvery(GET_USER_AUTH.REQUEST, checkAuthSaga);
+	yield takeEvery(LOGOUT.REQUEST, logoutSaga);
 }
 
 export default authWatcher;

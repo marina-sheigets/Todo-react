@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 import tokenService from './tokenService';
 import UserDTO from '../dtos/userDTO';
 import ApiError from '../exceptions/api-error';
-import jwt from 'jsonwebtoken';
 
 class UserService {
 	async registration(email: string, username: string, password: string) {

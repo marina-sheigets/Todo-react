@@ -6,4 +6,8 @@ export default function actionCreator(actionName: string) {
 	};
 }
 
-export const getURL = (selectedOption: any, id = '') => `${id}?filter=${selectedOption}`;
+export const getURL = (selectedOption: any, id?: string) => {
+	if (id) return `/todos/${id}?filter=${selectedOption}`;
+
+	return `/todos?filter=${selectedOption}`;
+};

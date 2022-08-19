@@ -14,7 +14,6 @@ class AuthController {
 			}
 			const { email, username, password } = req.body;
 			const userData = await userService.registration(email, username, password);
-			console.log(userData.refreshToken);
 			res.cookie(REFRESH_TOKEN, userData.refreshToken, {
 				expires: dayjs().add(30, 'days').toDate(),
 				httpOnly: true,
@@ -34,7 +33,6 @@ class AuthController {
 				expires: dayjs().add(30, 'days').toDate(),
 				httpOnly: true,
 			});
-			console.log(res.cookie);
 			return res.json(userData);
 		} catch (err) {
 			next(err);
@@ -55,9 +53,7 @@ class AuthController {
 	async refresh(req: Request, res: Response, next: any) {
 		try {
 			const { refreshToken } = req.cookies;
-			console.log(req.cookies);
 			const userData = await userService.refresh(refreshToken);
-			console.log(userData);
 			res.cookie(REFRESH_TOKEN, userData.refreshToken, {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
 				httpOnly: false,

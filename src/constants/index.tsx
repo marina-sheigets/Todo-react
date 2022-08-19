@@ -1,11 +1,13 @@
 export const TODOS_URL = `http://localhost:3000/todos`;
 export const AUTH_URL = `http://localhost:3000/auth`;
 
+export const BASE_URL = 'http://localhost:3000';
+
 export const AUTH_PATH = {
-	registration: '/registration',
-	login: '/login',
-	logout: '/logout',
-	refresh: '/refresh',
+	registration: '/auth/registration',
+	login: '/auth/login',
+	logout: '/auth/logout',
+	refresh: '/auth/refresh',
 };
 
 export const OPTIONS = {

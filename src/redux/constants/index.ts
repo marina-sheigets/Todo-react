@@ -12,3 +12,6 @@ export const CHANGE_TODO_COMPLETED = actionCreator('CHANGE_TODO_COMPLETED');
 
 export const REGISTER_USER = actionCreator('REGISTER_USER');
 export const SET_USER = actionCreator('SET_USER');
+export const LOGIN_USER = actionCreator('LOGIN_USER');
+export const GET_USER_AUTH = actionCreator('GET_USER_AUTH');
+export const LOGOUT = actionCreator('LOGOUT');

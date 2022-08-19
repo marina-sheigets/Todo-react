@@ -1,10 +1,12 @@
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { registerUserRequest, loginUserRequest } from '../../redux/action-creators/authActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './Auth.css';
+import { getError } from '../../redux/selectors/authSelector';
 
 function Auth() {
 	const dispatch = useDispatch();
+	const error = useSelector(getError);
 
 	const [email, setEmail] = useState('');
 	const [username, setUsername] = useState('');
@@ -76,13 +78,14 @@ function Auth() {
 				value={confirmedPassword}
 				placeholder='Confirm password'
 			/>
-			{isPasswordsEqual ? '' : <p>Passwords are not equal</p>}
+			{isPasswordsEqual ? '' : <p className='register-error'>Passwords are not equal</p>}
 			<button disabled={!isPasswordsEqual || isAllEmty ? true : false} onClick={register}>
 				Register
 			</button>
 			<button disabled={!isPasswordsEqual || isAllEmty ? true : false} onClick={loginUser}>
 				Login
 			</button>
+			{error ? <p className='register-error'>{error}</p> : ''}
 		</div>
 	);
 }

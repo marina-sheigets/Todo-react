@@ -19,7 +19,6 @@ class TodosController {
 	getTodos = async (req: any, res: any) => {
 		try {
 			const { userID } = req.params;
-			console.log(userID, typeof userID);
 			res.send(await this.fetchTodos(req.query.filter, userID));
 		} catch (err) {
 			return res.json(err);
@@ -39,7 +38,6 @@ class TodosController {
 
 			res.send(await this.fetchTodos(req.query.filter, userID));
 		} catch (err) {
-			console.log(err);
 			return res.json(err);
 		}
 	};
@@ -48,7 +46,6 @@ class TodosController {
 		try {
 			const { userID } = req.body;
 			const { id } = req.params;
-			console.log(id);
 			await Todo.deleteOne({ id });
 			res.send(await this.fetchTodos(req.query.filter, userID));
 		} catch (err) {
@@ -60,7 +57,7 @@ class TodosController {
 		try {
 			const { id } = req.params;
 			const { changeStatus, title, isAllCompleted, userID } = req.body;
-			console.log(req.body);
+
 			if (changeStatus) {
 				const todo: any = await Todo.findOne({ id });
 				todo.checked = !todo.checked;
