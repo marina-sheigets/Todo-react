@@ -19,8 +19,7 @@ import { AuthResponse } from '../../types/auth-types';
 function* getTodosSaga() {
 	try {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
-		const userID: AuthResponse = yield select(getUserID);
-		const TODOS_URL = getURL(selectedOption, String(userID));
+		const TODOS_URL = getURL(selectedOption);
 
 		const requestOptions = {
 			method: HTTP_METHODS.GET,
@@ -41,11 +40,9 @@ function* deleteTodoSaga(action: IAction) {
 		const id = action.payload;
 
 		const TODOS_URL = getURL(selectedOption, id);
-		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.DELETE,
-			body: JSON.stringify({ userID: userID }),
 		};
 
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
@@ -62,11 +59,10 @@ function* addTodoSaga(action: IAction) {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const title = action.payload;
 		const TODOS_URL = getURL(selectedOption);
-		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
-			body: JSON.stringify({ title, userID }),
+			body: JSON.stringify({ title }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
@@ -82,11 +78,10 @@ function* updateTodoSaga(action: IAction) {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { id, title } = yield action.payload;
 		const TODOS_URL = getURL(selectedOption, id);
-		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
-			body: JSON.stringify({ title, userID }),
+			body: JSON.stringify({ title }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
@@ -102,11 +97,10 @@ function* changeTodoStatusSaga(action: IAction) {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { id } = yield action.payload;
 		const TODOS_URL = getURL(selectedOption, id);
-		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
-			body: JSON.stringify({ changeStatus: 'true', userID }),
+			body: JSON.stringify({ changeStatus: 'true' }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
@@ -122,11 +116,10 @@ function* changeAllCompletedSaga(action: IAction) {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const { active } = yield action.payload;
 		const TODOS_URL = getURL(selectedOption);
-		const userID: AuthResponse = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.PATCH,
-			body: JSON.stringify({ changeStatusAll: 'true', isAllCompleted: active, userID }),
+			body: JSON.stringify({ changeStatusAll: 'true', isAllCompleted: active }),
 		};
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));

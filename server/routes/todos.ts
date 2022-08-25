@@ -4,7 +4,7 @@ import authMiddleware from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.get('/:userID', authMiddleware, TodosController.getTodos);
+router.get('/', authMiddleware, TodosController.getTodos);
 router.post('/', authMiddleware, TodosController.addTodo);
 router.delete('/:id', authMiddleware, TodosController.deleteTodo);
 router.patch('/:id?', authMiddleware, TodosController.updateTodo);

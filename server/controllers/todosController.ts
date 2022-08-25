@@ -1,8 +1,9 @@
+import { Request, Response } from 'express';
 import { OPTIONS } from './../../src/constants/index';
 import TodoModel from '../models/Todo';
 
 class TodosController {
-	async fetchTodos(selectedOption: string, userId: string) {
+	async fetchTodos(selectedOption: any, userId: string) {
 		let status: string | boolean = OPTIONS.all;
 		if (selectedOption === OPTIONS.completed) {
 			status = true;
@@ -17,9 +18,9 @@ class TodosController {
 		return await TodoModel.getAllTodosByUserId(userId);
 	}
 
-	getTodos = async (req: any, res: any) => {
+	getTodos = async (req: any, res: Response) => {
 		try {
-			const { userID } = req.params;
+			const { id: userID } = req.user;
 			let result = await this.fetchTodos(req.query.filter, userID);
 			res.send(result);
 		} catch (err) {
@@ -29,7 +30,8 @@ class TodosController {
 
 	addTodo = async (req: any, res: any) => {
 		try {
-			const { title, userID } = req.body;
+			const { title } = req.body;
+			const { id: userID } = req.user;
 
 			const newTodoOptions = {
 				id: Date.now(),
@@ -47,7 +49,7 @@ class TodosController {
 
 	deleteTodo = async (req: any, res: any) => {
 		try {
-			const { userID } = req.body;
+			const { id: userID } = req.user;
 			const { id } = req.params;
 			await TodoModel.deleteTodoById(id);
 			res.send(await this.fetchTodos(req.query.filter, userID));
@@ -59,8 +61,9 @@ class TodosController {
 	updateTodo = async (req: any, res: any) => {
 		try {
 			const { id } = req.params;
-			const { changeStatus, title, isAllCompleted, userID } = req.body;
-			console.log('changeStatus:' + changeStatus, 'id:' + id);
+			const { changeStatus, title, isAllCompleted } = req.body;
+			const { id: userID } = req.user;
+
 			if (changeStatus) {
 				const todo: any = await TodoModel.getTodoById(id);
 				console.log(todo);
