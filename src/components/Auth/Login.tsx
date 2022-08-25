@@ -22,7 +22,6 @@ function Login() {
 	useEffect(() => {
 		dispatch(clearError());
 		if (localStorage.getItem('token')) {
-			console.log('checkAuth');
 			dispatch(checkUserAuth());
 		}
 	}, []);

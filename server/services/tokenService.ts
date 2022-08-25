@@ -1,21 +1,15 @@
 import { scryptSync } from 'crypto';
 import jwt from 'jsonwebtoken';
-import { Token } from '../entities/tokenEntity';
-import { myDataSource } from '../server';
-/* import Token from '../models/Token';
- */
+import TokenModel from '../models/Token';
+
 class TokenService {
 	async getToken(id: number) {
-		return await myDataSource
-			.getRepository(Token)
-			.createQueryBuilder()
-			.where('token.userId=:id', { id })
-			.getOne();
+		return await TokenModel.getTokenById(id);
 	}
 
 	generateTokens(payload: any) {
 		const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET as string, {
-			expiresIn: '10m',
+			expiresIn: '10s',
 		});
 		const refreshToken = scryptSync(
 			process.env.JWT_REFRESH_SECRET as string,
@@ -32,13 +26,7 @@ class TokenService {
 	async saveToken(userId: number, refreshToken: string) {
 		const tokenData = await this.getToken(userId);
 		if (tokenData) {
-			await myDataSource
-				.getRepository(Token)
-				.createQueryBuilder()
-				.update()
-				.set({ refreshToken })
-				.where('token.userId=:userId', { userId })
-				.execute();
+			await TokenModel.updateToken(refreshToken, userId);
 			return tokenData;
 		}
 
@@ -47,32 +35,18 @@ class TokenService {
 			userId,
 		};
 
-		const token = await myDataSource
-			.createQueryBuilder()
-			.insert()
-			.into(Token)
-			.values([newTokenOptions])
-			.execute();
+		const token = await TokenModel.insertToken(newTokenOptions);
 		console.log(token);
 		return token;
 	}
 
 	async removeToken(refreshToken: string) {
-		const tokenData = await myDataSource
-			.createQueryBuilder()
-			.delete()
-			.from(Token)
-			.where('token.refreshToken=:refreshToken', { refreshToken })
-			.execute();
-		return tokenData;
+		await TokenModel.deleteToken(refreshToken);
 	}
 
 	async findToken(refreshToken: string) {
-		const tokenData = await myDataSource
-			.getRepository(Token)
-			.createQueryBuilder()
-			.where('token.refreshToken=:refreshToken', { refreshToken })
-			.getOne();
+		const tokenData = await TokenModel.getTokenByRefreshField(refreshToken);
+
 		return tokenData;
 	}
 

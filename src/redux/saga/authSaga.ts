@@ -14,11 +14,7 @@ function* registrationSaga(action: IAction) {
 			body: JSON.stringify({ email, username, password }),
 		};
 
-		const userData: AuthResponse = yield call(
-			callAPI,
-			BASE_URL + AUTH_PATH.registration,
-			requestOptions
-		);
+		const userData: AuthResponse = yield call(callAPI, AUTH_PATH.registration, requestOptions);
 		const { user, status } = userData;
 		console.log(userData);
 
@@ -41,11 +37,7 @@ function* loginSaga(action: IAction) {
 			body: JSON.stringify({ email, password }),
 		};
 
-		const userData: AuthResponse = yield call(
-			callAPI,
-			BASE_URL + AUTH_PATH.login,
-			requestOptions
-		);
+		const userData: AuthResponse = yield call(callAPI, AUTH_PATH.login, requestOptions);
 
 		localStorage.setItem('token', userData.accessToken);
 		const { user } = userData;
@@ -63,7 +55,7 @@ function* logoutSaga() {
 			method: HTTP_METHODS.POST,
 		};
 
-		yield call(callAPI, BASE_URL + AUTH_PATH.logout, requestOptions);
+		yield call(callAPI, AUTH_PATH.logout, requestOptions);
 		localStorage.removeItem('token');
 		yield put({ type: LOGOUT.SUCCESS });
 	} catch (err) {
@@ -76,11 +68,7 @@ function* checkAuthSaga() {
 		const requestOptions = {
 			method: HTTP_METHODS.GET,
 		};
-		const response: AuthResponse = yield call(
-			callAPI,
-			BASE_URL + AUTH_PATH.refresh,
-			requestOptions
-		);
+		const response: AuthResponse = yield call(callAPI, AUTH_PATH.refresh, requestOptions);
 		if (!response.user) throw new Error('You are not authorized !');
 		localStorage.setItem('token', response.accessToken);
 

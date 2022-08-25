@@ -1,11 +1,4 @@
-import {
-	Column,
-	Entity,
-	OneToMany,
-	PrimaryGeneratedColumn,
-	BaseEntity,
-	PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Todo } from './todoEntity';
 import { Token } from './tokenEntity';
 

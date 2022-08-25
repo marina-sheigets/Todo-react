@@ -10,7 +10,7 @@ class AuthController {
 		try {
 			const errors: any = validationResult(req);
 			if (!errors.isEmpty()) {
-				return res.status(400).json('Data must be from 3 characters. Try again');
+				return res.status(400).json('Data must have minimum 3 characters. Try again');
 			}
 			const { email, username, password } = req.body;
 			const userData = await userService.registration(email, username, password);
@@ -20,7 +20,6 @@ class AuthController {
 			});
 			return res.json(userData);
 		} catch (err: any) {
-			console.log('register ' + err);
 			next(err);
 			res.status(400).json(err.message);
 		}
@@ -36,16 +35,16 @@ class AuthController {
 			});
 			return res.json(userData);
 		} catch (err) {
-			console.log('error');
 			next(err);
 		}
 	}
 
-	async logout(req: any, res: any, next: any) {
+	async logout(req: any, res: Response, next: any) {
 		try {
 			const { refreshToken } = req.cookies;
-			const token = await userService.logout(refreshToken);
-			return res.json(token);
+			res.clearCookie('refreshToken');
+			await userService.logout(refreshToken);
+			return res.status(200).json('User is logged out');
 		} catch (err) {
 			next(err);
 		}
@@ -55,7 +54,6 @@ class AuthController {
 		try {
 			const { refreshToken } = req.cookies;
 			const userData: any = await userService.refresh(refreshToken);
-			console.log('userData in authController refresh ' + userData);
 
 			if (userData == 401) throw ApiError.UnathorizedError();
 
@@ -65,7 +63,6 @@ class AuthController {
 			});
 			return res.json(userData);
 		} catch (err: any) {
-			console.log('refresh error : ' + err);
 			return res.json(err);
 		}
 	}

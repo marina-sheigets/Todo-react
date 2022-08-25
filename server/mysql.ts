@@ -1,17 +1,17 @@
-/*
-app.get('/', (req, res) => {
-	const id = Date.now();
-	console.log(id);
+import { DataSource } from 'typeorm';
+import { Todo } from './entities/todoEntity';
+import { Token } from './entities/tokenEntity';
+import { User } from './entities/userEntity';
+import 'dotenv/config';
 
-	console.log(typeof id);
-	const sqlInsert = `INSERT INTO todos (id,text,checked) VALUES (?,"Buy the butter",false)`;
-	db.query(sqlInsert, [id], (err, res) => {
-		console.log(err);
-	});
-	res.send('Inserted');
+export const db = new DataSource({
+	type: 'mysql',
+	host: process.env.DB_HOST,
+	port: 3306, //default
+	username: process.env.DB_USERNAME,
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_NAME,
+	synchronize: true,
+	entities: [User, Todo, Token],
+	logging: true,
 });
-
-app.listen(3002, () => {
-	console.log('Server is listening on port 3002');
-});
-*/

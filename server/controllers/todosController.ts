@@ -1,32 +1,20 @@
-import { OPTIONS } from '../../src/constants';
-import { Todo } from '../entities/todoEntity';
-import { Token } from '../entities/tokenEntity';
-import { User } from '../entities/userEntity';
-import { myDataSource } from '../server';
+import { OPTIONS } from './../../src/constants/index';
+import TodoModel from '../models/Todo';
 
 class TodosController {
 	async fetchTodos(selectedOption: string, userId: string) {
-		let status: string | boolean = 'any';
-		if (selectedOption === 'Completed') {
+		let status: string | boolean = OPTIONS.all;
+		if (selectedOption === OPTIONS.completed) {
 			status = true;
-		} else if (selectedOption === 'Active') {
+		} else if (selectedOption === OPTIONS.active) {
 			status = false;
 		}
 
-		if (status !== 'any') {
-			return await myDataSource
-				.getRepository(Todo)
-				.createQueryBuilder()
-				.where('todo.checked=:checked', { checked: status })
-				.andWhere('todo.userId=:userId', { userId })
-				.getRawMany();
+		if (status !== OPTIONS.all) {
+			return await TodoModel.getAllTodosByCheckedField(status, userId);
 		}
 
-		return await myDataSource
-			.getRepository(Todo)
-			.createQueryBuilder()
-			.where('todo.userId=:userId', { userId })
-			.getRawMany();
+		return await TodoModel.getAllTodosByUserId(userId);
 	}
 
 	getTodos = async (req: any, res: any) => {
@@ -35,7 +23,6 @@ class TodosController {
 			let result = await this.fetchTodos(req.query.filter, userID);
 			res.send(result);
 		} catch (err) {
-			console.log(err);
 			return res.json(err);
 		}
 	};
@@ -50,14 +37,7 @@ class TodosController {
 				userId: +userID,
 			};
 
-			await myDataSource
-				.createQueryBuilder()
-				.insert()
-				.into(Todo)
-				.values([newTodoOptions])
-				.execute();
-
-			const todos = await myDataSource.getRepository(Todo).createQueryBuilder().getMany();
+			await TodoModel.insertTodo(newTodoOptions);
 
 			res.send(await this.fetchTodos(req.query.filter, userID));
 		} catch (err) {
@@ -69,12 +49,7 @@ class TodosController {
 		try {
 			const { userID } = req.body;
 			const { id } = req.params;
-			await myDataSource
-				.createQueryBuilder()
-				.delete()
-				.from(Todo)
-				.where('todo.id=:id', { id })
-				.execute();
+			await TodoModel.deleteTodoById(id);
 			res.send(await this.fetchTodos(req.query.filter, userID));
 		} catch (err) {
 			return res.json(err);
@@ -85,38 +60,16 @@ class TodosController {
 		try {
 			const { id } = req.params;
 			const { changeStatus, title, isAllCompleted, userID } = req.body;
-
+			console.log('changeStatus:' + changeStatus, 'id:' + id);
 			if (changeStatus) {
-				const todo: any = await myDataSource
-					.getRepository(Todo)
-					.createQueryBuilder()
-					.where('todo.id=:id', { id })
-					.getOne();
+				const todo: any = await TodoModel.getTodoById(id);
 				console.log(todo);
-
-				await myDataSource
-					.getRepository(Todo)
-					.createQueryBuilder()
-					.update()
-					.set({ checked: !todo.checked })
-					.where('todo.id=:id', { id })
-					.execute();
+				await TodoModel.updateTodoCheckedById(id, !todo.checked);
 			} else if (title) {
-				await myDataSource
-					.getRepository(Todo)
-					.createQueryBuilder()
-					.update()
-					.set({ text: title })
-					.where('todo.id=:id', { id })
-					.execute();
+				await TodoModel.updateTodoTextById(id, title);
 			} else {
 				let status = isAllCompleted ? false : true;
-				await myDataSource
-					.getRepository(Todo)
-					.createQueryBuilder()
-					.update()
-					.set({ checked: status })
-					.execute();
+				await TodoModel.updateAllTodosChecked(status);
 			}
 			res.send(await this.fetchTodos(req.query.filter, userID));
 		} catch (err) {

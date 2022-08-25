@@ -5,12 +5,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import errorMiddleware from './middleware/errorMiddleware';
-import mysql from 'mysql';
-import { DataSource, QueryBuilder } from 'typeorm';
-import { User } from './entities/userEntity';
-import { Todo } from './entities/todoEntity';
-import { Token } from './entities/tokenEntity';
 import TodosRouter from './routes/todos';
+import { db } from './mysql';
 
 const app = express();
 app.use(function (req, res, next) {
@@ -35,21 +31,7 @@ app.use(errorMiddleware);
 app.use('/todos', TodosRouter);
 app.use('/auth', AuthRouter);
 
-//connect to mongoDB
-export const myDataSource = new DataSource({
-	type: 'mysql',
-	host: 'localhost',
-	port: 3306, //default
-	username: 'root',
-	password: 'password',
-	database: 'todoapp',
-	synchronize: true,
-	entities: [User, Todo, Token],
-	logging: true,
-});
-
-myDataSource
-	.initialize()
+db.initialize()
 	.then(() => {
 		console.log('Initialized');
 	})

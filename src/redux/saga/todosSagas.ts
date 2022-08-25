@@ -26,8 +26,7 @@ function* getTodosSaga() {
 			method: HTTP_METHODS.GET,
 		};
 
-		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL, requestOptions);
-		console.log(todos);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -49,7 +48,7 @@ function* deleteTodoSaga(action: IAction) {
 			body: JSON.stringify({ userID: userID }),
 		};
 
-		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -69,7 +68,7 @@ function* addTodoSaga(action: IAction) {
 			method: HTTP_METHODS.POST,
 			body: JSON.stringify({ title, userID }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -89,7 +88,7 @@ function* updateTodoSaga(action: IAction) {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ title, userID }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -109,7 +108,7 @@ function* changeTodoStatusSaga(action: IAction) {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ changeStatus: 'true', userID }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';
@@ -129,7 +128,7 @@ function* changeAllCompletedSaga(action: IAction) {
 			method: HTTP_METHODS.PATCH,
 			body: JSON.stringify({ changeStatusAll: 'true', isAllCompleted: active, userID }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';

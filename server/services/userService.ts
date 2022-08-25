@@ -1,28 +1,14 @@
-import { myDataSource } from './../server';
+import { db } from './../mysql';
 import bcrypt from 'bcryptjs';
 import tokenService from './tokenService';
 import UserDTO from '../dtos/userDTO';
 import ApiError from '../exceptions/api-error';
 import { User } from '../entities/userEntity';
+import UserModel from '../models/User';
 
 class UserService {
-	async getCandidate(email: string) {
-		return await myDataSource
-			.getRepository(User)
-			.createQueryBuilder()
-			.where('user.email=:email', { email })
-			.getOne();
-	}
-
-	async getUser(id: number) {
-		return await myDataSource
-			.getRepository(User)
-			.createQueryBuilder()
-			.where('user.id=:id', { id })
-			.getOne();
-	}
 	async registration(email: string, username: string, password: string) {
-		const candidate = await this.getCandidate(email);
+		const candidate = await UserModel.getUserByEmail(email);
 		if (candidate) {
 			throw ApiError.BadRequest(`User with ${email} exists`);
 		}
@@ -35,14 +21,9 @@ class UserService {
 			password: hashPassword,
 		};
 
-		const result = await myDataSource
-			.createQueryBuilder()
-			.insert()
-			.into(User)
-			.values([newUserOptions])
-			.execute();
+		const result = await UserModel.insertUser(newUserOptions);
 
-		const user = await this.getUser(result.identifiers[0].id);
+		const user = await UserModel.getUserById(result.identifiers[0].id);
 		const userDTO = new UserDTO(user);
 		const tokens = tokenService.generateTokens({ ...userDTO });
 		await tokenService.saveToken(+userDTO.id, tokens.refreshToken);
@@ -54,7 +35,7 @@ class UserService {
 	}
 
 	async login(email: string, password: string) {
-		const candidate: any = await this.getCandidate(email);
+		const candidate: any = await UserModel.getUserByEmail(email);
 		if (!candidate) {
 			throw ApiError.BadRequest('User was not found');
 		}
@@ -65,6 +46,7 @@ class UserService {
 
 		const userDTO = new UserDTO(candidate);
 		const tokens = tokenService.generateTokens({ ...userDTO });
+		console.log(tokens);
 		await tokenService.saveToken(userDTO.id, tokens['refreshToken']);
 
 		return {
@@ -74,8 +56,7 @@ class UserService {
 	}
 
 	async logout(refreshToken: string) {
-		const token = await tokenService.removeToken(refreshToken);
-		return token;
+		await tokenService.removeToken(refreshToken);
 	}
 
 	async refresh(refreshToken: string) {
@@ -89,7 +70,7 @@ class UserService {
 			if (!foundToken) {
 				throw ApiError.UnathorizedError();
 			}
-			const user = await this.getUser(foundToken.userId);
+			const user = await UserModel.getUserById(foundToken.userId);
 			const userDTO = new UserDTO(user);
 			const tokens = tokenService.generateTokens({ ...userDTO });
 			await tokenService.saveToken(userDTO.id, tokens['refreshToken']);
