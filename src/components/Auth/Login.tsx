@@ -18,11 +18,11 @@ function Login() {
 
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [confirmedPassword, setConfirmedPassword] = useState('');
 
 	useEffect(() => {
 		dispatch(clearError());
 		if (localStorage.getItem('token')) {
+			console.log('checkAuth');
 			dispatch(checkUserAuth());
 		}
 	}, []);
@@ -34,17 +34,6 @@ function Login() {
 	const handleChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
 		setPassword(e.target.value);
 	};
-
-	const handleChangeConfirmedPassword = (e: ChangeEvent<HTMLInputElement>) => {
-		setConfirmedPassword(e.target.value);
-	};
-
-	const isPasswordsEqual = useMemo(() => {
-		if (confirmedPassword === password) {
-			return true;
-		}
-		return false;
-	}, [confirmedPassword, password]);
 
 	const loginUser = useCallback(() => {
 		dispatch(loginUserRequest({ email, password }));
@@ -75,27 +64,11 @@ function Login() {
 					/>
 					<input
 						type='password'
-						className={isPasswordsEqual ? '' : 'error'}
 						onChange={handleChangePassword}
 						value={password}
 						placeholder='Password'
 					/>
-					<input
-						type='password'
-						className={isPasswordsEqual ? '' : 'error'}
-						onChange={handleChangeConfirmedPassword}
-						value={confirmedPassword}
-						placeholder='Confirm password'
-					/>
-					{isPasswordsEqual ? (
-						''
-					) : (
-						<p className='register-error'>Passwords are not equal</p>
-					)}
-
-					<button
-						disabled={!isPasswordsEqual || isAllEmty ? true : false}
-						onClick={loginUser}>
+					<button disabled={isAllEmty ? true : false} onClick={loginUser}>
 						Login
 					</button>
 					<p onClick={toRegister}>

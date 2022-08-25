@@ -1,8 +1,7 @@
-import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router';
 import { registerUserRequest, clearError } from '../../redux/action-creators/authActions';
-import { CLEAR_ERROR } from '../../redux/constants';
 import { getIsAuth, getError } from '../../redux/selectors/authSelector';
 import './Auth.css';
 

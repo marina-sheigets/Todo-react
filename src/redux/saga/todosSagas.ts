@@ -7,7 +7,7 @@ import {
 	CHANGE_TODO_COMPLETED,
 	CHANGE_TODO_STATUS,
 } from '../constants';
-import { BASE_URL, HTTP_METHODS, TODOS_URL } from '../../constants';
+import { BASE_URL, HTTP_METHODS } from '../../constants';
 import { setTodosFail, setTodosSuccess } from '../action-creators/todoActions';
 import { IAction, ResponseGenerator } from '../../types';
 import { callAPI } from '../../api';
@@ -27,6 +27,7 @@ function* getTodosSaga() {
 		};
 
 		const todos: ResponseGenerator = yield call(callAPI, BASE_URL + TODOS_URL, requestOptions);
+		console.log(todos);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
 		let message = 'Unknown Error';

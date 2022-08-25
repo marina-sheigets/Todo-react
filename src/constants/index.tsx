@@ -1,7 +1,7 @@
-export const TODOS_URL = `http://localhost:3000/todos`;
-export const AUTH_URL = `http://localhost:3000/auth`;
+export const TODOS_URL = `http://localhost:3030/todos`;
+export const AUTH_URL = `http://localhost:3030/auth`;
 
-export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL = 'http://localhost:3030';
 
 export const AUTH_PATH = {
 	registration: '/auth/registration',

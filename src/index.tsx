@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Registration from './components/Auth/Registration';
 import Login from './components/Auth/Login';
-import TodoMain from './components/TodoMain';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

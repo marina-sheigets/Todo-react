@@ -15,7 +15,8 @@ const TodoItem: FC<TodoItemProps> = ({ todo }) => {
 	const [editingMode, setEditingMode] = useState(false);
 	const [editText, setEditText] = useState('');
 
-	const { id, text, checked } = todo;
+	let { Todo_id: id, Todo_text: text, Todo_checked: checked } = todo;
+	checked = !!checked;
 	const dispatch = useDispatch();
 
 	const deleteTodo = useCallback(() => {

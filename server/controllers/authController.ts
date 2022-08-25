@@ -10,7 +10,7 @@ class AuthController {
 		try {
 			const errors: any = validationResult(req);
 			if (!errors.isEmpty()) {
-				return next(ApiError.BadRequest('Validation error', errors.array()));
+				return res.status(400).json('Data must be from 3 characters. Try again');
 			}
 			const { email, username, password } = req.body;
 			const userData = await userService.registration(email, username, password);
@@ -19,9 +19,10 @@ class AuthController {
 				httpOnly: true,
 			});
 			return res.json(userData);
-		} catch (err) {
+		} catch (err: any) {
+			console.log('register ' + err);
 			next(err);
-			res.status(400).json(err);
+			res.status(400).json(err.message);
 		}
 	}
 
@@ -35,6 +36,7 @@ class AuthController {
 			});
 			return res.json(userData);
 		} catch (err) {
+			console.log('error');
 			next(err);
 		}
 	}
@@ -43,7 +45,6 @@ class AuthController {
 		try {
 			const { refreshToken } = req.cookies;
 			const token = await userService.logout(refreshToken);
-			localStorage.removeItem('token');
 			return res.json(token);
 		} catch (err) {
 			next(err);
@@ -53,17 +54,24 @@ class AuthController {
 	async refresh(req: Request, res: Response, next: any) {
 		try {
 			const { refreshToken } = req.cookies;
-			const userData = await userService.refresh(refreshToken);
+			const userData: any = await userService.refresh(refreshToken);
+			console.log('userData in authController refresh ' + userData);
+
+			if (userData == 401) throw ApiError.UnathorizedError();
+
 			res.cookie(REFRESH_TOKEN, userData.refreshToken, {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
 				httpOnly: false,
 			});
-
 			return res.json(userData);
-		} catch (err) {
-			next(err);
+		} catch (err: any) {
+			console.log('refresh error : ' + err);
+			return res.json(err);
 		}
 	}
 }
+
+//}
+//}
 
 export default new AuthController();

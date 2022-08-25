@@ -1,6 +1,6 @@
 import { call, put, takeEvery } from '@redux-saga/core/effects';
 import { callAPI } from '../../api';
-import { AUTH_PATH, AUTH_URL, BASE_URL, HTTP_METHODS } from '../../constants';
+import { AUTH_PATH, BASE_URL, HTTP_METHODS } from '../../constants';
 import { IAction } from '../../types';
 import { AuthResponse } from '../../types/auth-types';
 import { logoutUser, setUser, setUserFail } from '../action-creators/authActions';
@@ -20,14 +20,16 @@ function* registrationSaga(action: IAction) {
 			requestOptions
 		);
 		const { user, status } = userData;
+		console.log(userData);
 
-		if (status === 400) {
-			yield put(setUserFail({ errorMessage: 'User with such email exists ' }));
+		if (!user) {
+			throw new Error(userData.toString());
 		} else {
+			localStorage.setItem('token', userData.accessToken);
 			yield put(setUser({ user, status }));
 		}
 	} catch (err: any) {
-		console.log(JSON.stringify(err));
+		yield put(setUserFail({ errorMessage: err.message }));
 	}
 }
 
@@ -46,10 +48,11 @@ function* loginSaga(action: IAction) {
 		);
 
 		localStorage.setItem('token', userData.accessToken);
-		const { user, status } = userData;
+		const { user } = userData;
 
 		yield put(setUser({ user }));
 	} catch (err) {
+		console.log(err);
 		yield put(setUserFail({ errorMessage: 'Data is incorrect' }));
 	}
 }
@@ -62,7 +65,7 @@ function* logoutSaga() {
 
 		yield call(callAPI, BASE_URL + AUTH_PATH.logout, requestOptions);
 		localStorage.removeItem('token');
-		yield put(logoutUser());
+		//yield put(logoutUser());
 	} catch (err) {
 		console.log(err);
 	}
@@ -78,12 +81,13 @@ function* checkAuthSaga() {
 			BASE_URL + AUTH_PATH.refresh,
 			requestOptions
 		);
-
+		if (!response.user) throw new Error('You are not authorized !');
 		localStorage.setItem('token', response.accessToken);
+
 		const { user, status } = response;
 		yield put(setUser({ user, status }));
-	} catch (e) {
-		console.log(e);
+	} catch (e: any) {
+		yield put(setUserFail({ errorMessage: e.message }));
 	}
 }
 

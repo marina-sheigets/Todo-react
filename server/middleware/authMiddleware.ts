@@ -9,12 +9,13 @@ export default function (req: any, res: any, next: any) {
 		}
 		const accessToken = autorizationHeader.split(' ')[1];
 		if (!accessToken) {
-			return next(ApiError.UnathorizedError());
+			return res.status(401).json("User isn't authorized");
+			//return next(ApiError.UnathorizedError());
 		}
 
 		const userData = tokenService.validateAccessToken(accessToken);
 		if (!userData) {
-			return next(ApiError.UnathorizedError());
+			return res.status(401).json("User isn't authorized");
 		}
 
 		req.user = userData;

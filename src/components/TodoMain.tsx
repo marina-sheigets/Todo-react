@@ -33,7 +33,7 @@ const TodoMain: FC = () => {
 		[newTodoText, dispatch]
 	);
 
-	const isAllCompleted = useMemo(() => todos.every((elem: Todo) => elem.checked), [todos]);
+	const isAllCompleted = useMemo(() => todos.every((elem: Todo) => elem.Todo_checked), [todos]);
 
 	const changeAllCompleted = useCallback(() => {
 		dispatch(changeAllCompletedRequest({ active: isAllCompleted }));

@@ -6,6 +6,6 @@ export default class UserDTO {
 	constructor(model: any) {
 		this.email = model.email;
 		this.username = model.username;
-		this.id = model._id;
+		this.id = model.id;
 	}
 }

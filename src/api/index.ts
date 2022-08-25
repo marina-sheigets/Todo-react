@@ -1,7 +1,10 @@
 import { AUTH_URL } from '../constants';
 
+let isCalledTwice = false;
+
 export async function callAPI(URL: string, options?: any) {
 	const accessToken = localStorage.getItem('token');
+	console.log('access token ' + accessToken);
 	const finalOptions: any = {
 		...options,
 		credentials: 'include',
@@ -12,17 +15,28 @@ export async function callAPI(URL: string, options?: any) {
 		},
 	};
 	const result = await fetch(URL, finalOptions);
-
-	if (result.status === 401) {
-		const tokens = await fetch(AUTH_URL + '/refresh', {
-			credentials: 'include',
-		});
-		const { accessToken } = await tokens.json();
+	console.log(result);
+	if (result.status === 401 && isCalledTwice === false) {
+		console.log('401');
+		const response = await (
+			await fetch(AUTH_URL + '/refresh', {
+				credentials: 'include',
+			})
+		).json();
+		console.log(response);
+		if (response.status) {
+			console.log('isCalledTwice');
+			return 'User is not authorized';
+		}
+		const { accessToken } = response;
 		localStorage.setItem('token', accessToken);
 
-		let response: any = await callAPI(URL, options);
-		return response;
+		let data: any = await callAPI(URL, options);
+		isCalledTwice = true;
+		return data;
 	}
-	const userData = await result.json();
-	return userData;
+
+	const finalData = await result.json();
+	console.log(finalData);
+	return finalData;
 }
