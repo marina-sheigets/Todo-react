@@ -18,7 +18,7 @@ const authReducer = (state = initialState, action: any): IAuthReducerState => {
 			return { ...state, isAuth: true, user: { ...action.payload.user } };
 		case SET_USER.FAIL:
 			return { ...state, error: action.payload.errorMessage };
-		case LOGOUT.REQUEST:
+		case LOGOUT.SUCCESS:
 			return { ...state, isAuth: false, user: {} };
 		case CLEAR_ERROR.REQUEST:
 			return { ...state, error: '' };

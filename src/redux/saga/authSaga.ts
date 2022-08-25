@@ -65,7 +65,7 @@ function* logoutSaga() {
 
 		yield call(callAPI, BASE_URL + AUTH_PATH.logout, requestOptions);
 		localStorage.removeItem('token');
-		//yield put(logoutUser());
+		yield put({ type: LOGOUT.SUCCESS });
 	} catch (err) {
 		console.log(err);
 	}
