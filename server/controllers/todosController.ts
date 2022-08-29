@@ -66,7 +66,6 @@ class TodosController {
 
 			if (changeStatus) {
 				const todo: any = await TodoModel.getTodoById(id);
-				console.log(todo);
 				await TodoModel.updateTodoCheckedById(id, !todo.checked);
 			} else if (title) {
 				await TodoModel.updateTodoTextById(id, title);

@@ -11,7 +11,6 @@ class UserModel {
 	}
 
 	async getUserById(id: number) {
-		console.log(id);
 		return await db
 			.getRepository(User)
 			.createQueryBuilder()

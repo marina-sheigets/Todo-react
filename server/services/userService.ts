@@ -46,7 +46,6 @@ class UserService {
 
 		const userDTO = new UserDTO(candidate);
 		const tokens = tokenService.generateTokens({ ...userDTO });
-		console.log(tokens);
 		await tokenService.saveToken(userDTO.id, tokens['refreshToken']);
 
 		return {
@@ -61,7 +60,6 @@ class UserService {
 
 	async refresh(refreshToken: string) {
 		try {
-			console.log(refreshToken);
 			if (!refreshToken) {
 				throw ApiError.UnathorizedError();
 			}

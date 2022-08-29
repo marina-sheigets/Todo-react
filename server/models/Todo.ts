@@ -3,7 +3,6 @@ import { db } from '../mysql';
 
 class TodoModel {
 	async getAllTodosByCheckedField(status: string | boolean, userId: string) {
-		console.log(status, userId);
 		return await db
 			.getRepository(Todo)
 			.createQueryBuilder()
@@ -37,7 +36,6 @@ class TodoModel {
 	}
 
 	async updateTodoCheckedById(id: number, checked: boolean) {
-		console.log(id, checked);
 		return await db
 			.getRepository(Todo)
 			.createQueryBuilder()

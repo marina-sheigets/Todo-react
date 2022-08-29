@@ -50,7 +50,7 @@ class AuthController {
 		}
 	}
 
-	async refresh(req: Request, res: Response, next: any) {
+	async refresh(req: any, res: Response, next: any) {
 		try {
 			const { refreshToken } = req.cookies;
 			const userData: any = await userService.refresh(refreshToken);

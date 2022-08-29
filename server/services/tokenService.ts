@@ -36,7 +36,6 @@ class TokenService {
 		};
 
 		const token = await TokenModel.insertToken(newTokenOptions);
-		console.log(token);
 		return token;
 	}
 

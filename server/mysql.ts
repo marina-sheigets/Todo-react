@@ -13,5 +13,4 @@ export const db = new DataSource({
 	database: process.env.DB_NAME,
 	synchronize: true,
 	entities: [User, Todo, Token],
-	logging: true,
 });

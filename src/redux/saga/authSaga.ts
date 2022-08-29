@@ -16,7 +16,6 @@ function* registrationSaga(action: IAction) {
 
 		const userData: AuthResponse = yield call(callAPI, AUTH_PATH.registration, requestOptions);
 		const { user, status } = userData;
-		console.log(userData);
 
 		if (!user) {
 			throw new Error(userData.toString());
@@ -44,7 +43,6 @@ function* loginSaga(action: IAction) {
 
 		yield put(setUser({ user }));
 	} catch (err) {
-		console.log(err);
 		yield put(setUserFail({ errorMessage: 'Data is incorrect' }));
 	}
 }
@@ -58,8 +56,8 @@ function* logoutSaga() {
 		yield call(callAPI, AUTH_PATH.logout, requestOptions);
 		localStorage.removeItem('token');
 		yield put({ type: LOGOUT.SUCCESS });
-	} catch (err) {
-		console.log(err);
+	} catch (err: any) {
+		yield put(setUserFail({ errorMessage: err.message }));
 	}
 }
 

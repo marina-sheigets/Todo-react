@@ -7,14 +7,16 @@ import {
 	CHANGE_TODO_COMPLETED,
 	CHANGE_TODO_STATUS,
 } from '../constants';
-import { BASE_URL, HTTP_METHODS } from '../../constants';
+import { HTTP_METHODS } from '../../constants';
 import { setTodosFail, setTodosSuccess } from '../action-creators/todoActions';
-import { IAction, ResponseGenerator } from '../../types';
+import { IAction, ResponseGenerator, Todo } from '../../types';
 import { callAPI } from '../../api';
 import { getSelectedOption } from '../selectors/todosSelector';
 import { getURL } from '../../utils';
 import { getUserID } from '../selectors/authSelector';
-import { AuthResponse } from '../../types/auth-types';
+import { socket } from '../../socket';
+
+let TODOS: Todo[] = [];
 
 function* getTodosSaga() {
 	try {
@@ -59,13 +61,16 @@ function* addTodoSaga(action: IAction) {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const title = action.payload;
 		const TODOS_URL = getURL(selectedOption);
+		const userID: ResponseGenerator = yield select(getUserID);
 
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
 			body: JSON.stringify({ title }),
 		};
-		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
-		yield put(setTodosSuccess(todos));
+		console.log('app');
+
+		//const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
+		yield put(setTodosSuccess(TODOS));
 	} catch (error) {
 		let message = 'Unknown Error';
 		if (error instanceof Error) message = error.message;
