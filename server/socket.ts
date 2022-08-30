@@ -1,15 +1,20 @@
-import { httpServer } from './server';
 import { Server } from 'socket.io';
 
-/*export  const io = new Server(httpServer, {
-	serveClient: false,
+import { createServer } from 'http';
+import { GET_TODOS_EVENT } from './constants';
+import { Todo } from './entities/todoEntity';
+
+const httpServer = createServer();
+
+const io = new Server(httpServer, {
 	cors: {
-		origin: 'http://localhost:3000',
+		origin: '*',
 		credentials: true,
 	},
 });
 
 let user: any = [];
+let todos: Todo[] = [];
 
 const addUser = (userID: string, socketID: string) => {
 	!user.some((item: any) => item.userID === userID) && user.push({ userID, socketID });
@@ -20,7 +25,15 @@ io.on('connection', (socket) => {
 
 	socket.on('addUser', (userID) => {
 		console.log('addUser');
-		addUser(userID, socket.id);
+	});
+
+	socket.on(GET_TODOS_EVENT, (data) => {
+		todos = [...data];
+		console.log(todos);
+	});
+	socket.on('notification', () => {
+		io.emit('todos', todos);
 	});
 });
- */
+
+httpServer.listen(5000);

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { OPTIONS } from './../../src/constants/index';
 import TodoModel from '../models/Todo';
+import { GET_TODOS_EVENT } from '../constants';
+import { socket } from '../server';
 
 class TodosController {
 	async fetchTodos(selectedOption: any, userId: string) {
@@ -22,6 +24,7 @@ class TodosController {
 		try {
 			const { id: userID } = req.user;
 			let result = await this.fetchTodos(req.query.filter, userID);
+			socket.emit(GET_TODOS_EVENT, result);
 			res.send(result);
 		} catch (err) {
 			return res.json(err);
@@ -40,8 +43,10 @@ class TodosController {
 			};
 
 			await TodoModel.insertTodo(newTodoOptions);
+			let result = await this.fetchTodos(req.query.filter, userID);
+			socket.emit(GET_TODOS_EVENT, result);
 
-			res.send(await this.fetchTodos(req.query.filter, userID));
+			res.send(result);
 		} catch (err) {
 			return res.json(err);
 		}
@@ -52,7 +57,10 @@ class TodosController {
 			const { id: userID } = req.user;
 			const { id } = req.params;
 			await TodoModel.deleteTodoById(id);
-			res.send(await this.fetchTodos(req.query.filter, userID));
+			let result = await this.fetchTodos(req.query.filter, userID);
+			socket.emit(GET_TODOS_EVENT, result);
+
+			res.send(result);
 		} catch (err) {
 			return res.json(err);
 		}
@@ -73,7 +81,9 @@ class TodosController {
 				let status = isAllCompleted ? false : true;
 				await TodoModel.updateAllTodosChecked(status);
 			}
-			res.send(await this.fetchTodos(req.query.filter, userID));
+			let result = await this.fetchTodos(req.query.filter, userID);
+			socket.emit(GET_TODOS_EVENT, result);
+			res.send(result);
 		} catch (err) {
 			return res.json(err);
 		}

@@ -15,6 +15,7 @@ import { getSelectedOption } from '../selectors/todosSelector';
 import { getURL } from '../../utils';
 import { getUserID } from '../selectors/authSelector';
 import { socket } from '../../socket';
+import { GET_TODOS_EVENT } from '../../socket/constants';
 
 let TODOS: Todo[] = [];
 
@@ -26,7 +27,6 @@ function* getTodosSaga() {
 		const requestOptions = {
 			method: HTTP_METHODS.GET,
 		};
-
 		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
 		yield put(setTodosSuccess(todos));
 	} catch (error) {
@@ -62,14 +62,19 @@ function* addTodoSaga(action: IAction) {
 		const title = action.payload;
 		const TODOS_URL = getURL(selectedOption);
 		const userID: ResponseGenerator = yield select(getUserID);
-
 		const requestOptions = {
 			method: HTTP_METHODS.POST,
 			body: JSON.stringify({ title }),
 		};
-		console.log('app');
 
-		//const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
+		const todos: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
+		yield socket.emit('notification');
+		yield socket.on('todos', (todos) => {
+			TODOS = [...todos];
+			console.log(1);
+		});
+		console.log(2);
+
 		yield put(setTodosSuccess(TODOS));
 	} catch (error) {
 		let message = 'Unknown Error';

@@ -6,20 +6,22 @@ import Loader from './Loader/Loader';
 import { getError, getIsLoading, getTodos } from '../redux/selectors/todosSelector';
 import { io } from 'socket.io-client';
 import { getUserID } from '../redux/selectors/authSelector';
+import { socket } from '../socket';
 
 const TodoList: FC = () => {
 	const todos = useSelector(getTodos);
 	const error = useSelector(getError);
 	const isLoading = useSelector(getIsLoading);
-	const socket = useRef(io(`ws://localhost:3030`));
 	const userID = useSelector(getUserID);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
+		console.log('useeffect');
+	}, []);
+
+	useEffect(() => {
 		dispatch(getTodosRequest());
-		console.log(userID);
-		socket.current.emit('addUser', userID);
 	}, [dispatch]);
 
 	if (isLoading) {

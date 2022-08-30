@@ -8,11 +8,16 @@ import errorMiddleware from './middleware/errorMiddleware';
 import TodosRouter from './routes/todos';
 import { db } from './mysql';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
-import TodoModel from './models/Todo';
-import todosController from './controllers/todosController';
+import { io } from 'socket.io-client';
+
 const PORT = process.env.PORT || 5000;
 const app = express();
+
+export const socket = io('ws://localhost:5000', {
+	withCredentials: true,
+});
+
+const httpServer = createServer(app);
 
 app.use(cookieParser());
 
@@ -25,9 +30,10 @@ app.use(
 	})
 );
 app.use(errorMiddleware);
-
-export const httpServer = createServer(app);
-
+/* app.use((req: any, res, next) => {
+	req.io = io;
+	next();
+}); */
 //routes
 app.use('/todos', TodosRouter);
 app.use('/auth', AuthRouter);
@@ -38,25 +44,19 @@ db.initialize()
 	})
 	.catch((err) => console.log('Error' + err));
 
-const io = new Server(httpServer, {
-	serveClient: false,
-	cors: {
-		origin: 'http://localhost:3000',
-		credentials: true,
-	},
-});
-
 let user: any = [];
 
 const addUser = (userID: string, socketID: string) => {
 	!user.some((item: any) => item.userID === userID) && user.push({ userID, socketID });
 };
 
-io.sockets.on('connection', (socket) => {
-	socket.on('addUser', (userID) => {
-		addUser(userID, socket.id);
-	});
-
+/* 
+io.on('connection', (socket) => {
+	console.log('user is connected');
+	global.socket = socket; */
+//socket.emit("event","hello");
+//socket.on(ADD_TODO_EVENT, todosController.addTodo);
+/*
 	socket.on('addTodo', async (payload) => {
 		console.log('add todo sokcet');
 
@@ -76,16 +76,9 @@ io.sockets.on('connection', (socket) => {
 			console.log(err);
 			//return res.json(err);
 		}
-	});
-});
+	}); */
+/* }); */
 
 httpServer.listen(PORT, () => {
 	console.log(`Server is listening on port ${PORT}...`);
 });
-
-/* const wss = new Server(server, {
-	cors: {
-		origin: process.env.CLIENT_URL,
-	},
-});
- */

@@ -16,16 +16,12 @@ import { addTodoRequest, changeAllCompletedRequest } from '../redux/action-creat
 import { SET_TODOS } from '../redux/constants';
 import { getIsAuth, getUserID } from '../redux/selectors/authSelector';
 import { getSelectedOption, getTodos } from '../redux/selectors/todosSelector';
+import { socket } from '../socket';
 /* import { socket } from '../socket';
  */ import { Todo } from '../types';
 import Filtering from './Filtering';
 import Header from './Header/Header';
 import TodoList from './TodoList';
-
-/* export const socket = io('ws://localhost:3030', {
-	transports: ['websocket'],
-	withCredentials: true,
-}); */
 
 const TodoMain: FC = () => {
 	const [newTodoText, setNewTodoText] = useState('');
@@ -40,38 +36,15 @@ const TodoMain: FC = () => {
 		setNewTodoText(e.target.value);
 	};
 
-	/* function subscribeNewTodos() {
-		return function (dispatch: Dispatch) {
-			socket.on('addTodoSuccess', (newTodos) => {
-				console.log(newTodos);
-				dispatch({
-					type: SET_TODOS.SUCCESS,
-					payload: newTodos,
-				});
-			});
-		};
-	}
- */
-	const addTodo =
-		/* useCallback( */
-		(e: FormEvent) => {
-			e.preventDefault();
-
-			if (newTodoText.trim().length! == 0) {
-				//	socket.emit('addTodo', { newTodoText, selectedOption, userID });
-				/* socket.on('addTodoSuccess', (todos) => {
-					return (dispatch: any) => dispatch({ type: SET_TODOS.SUCCESS, payload: todos });
-				});
- */ console.log('add Tood');
-
-				//subscribeNewTodos()(dispatch);
-				//dispatch(addTodoRequest(newTodoText));
-
-				setNewTodoText('');
-			}
-		}; /* ,
-		[newTodoText]
-	); */
+	const addTodo = (e: FormEvent) => {
+		e.preventDefault();
+		if (newTodoText.trim().length !== 0) {
+			/* 			socket.on('notification', (data) => console.log(data));
+			console.log(newTodoText.trim().length);
+ */ dispatch(addTodoRequest(newTodoText));
+			setNewTodoText('');
+		}
+	};
 
 	const isAllCompleted = useMemo(() => todos.every((elem: Todo) => elem.Todo_checked), [todos]);
 

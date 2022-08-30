@@ -8,3 +8,6 @@ export const ROLES = {
 	admin: 'ADMIN',
 };
 export const COLLECTION = 'todos';
+
+export const GET_TODOS_EVENT = 'GET_TODOS';
+export const ADD_TODO_EVENT = 'ADD_TODO';
