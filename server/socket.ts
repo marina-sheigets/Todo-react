@@ -1,7 +1,6 @@
 import { Server } from 'socket.io';
 
 import { createServer } from 'http';
-import { GET_TODOS_EVENT } from './constants';
 import { Todo } from './entities/todoEntity';
 
 const httpServer = createServer();
@@ -21,18 +20,12 @@ const addUser = (userID: string, socketID: string) => {
 };
 
 io.on('connection', (socket) => {
-	console.log('sockets work');
-
 	socket.on('addUser', (userID) => {
-		console.log('addUser');
+		addUser(userID, socket.id);
 	});
 
-	socket.on(GET_TODOS_EVENT, (data) => {
-		todos = [...data];
-		console.log(todos);
-	});
-	socket.on('notification', () => {
-		io.emit('todos', todos);
+	socket.on('server_notification', (data) => {
+		io /* .to(user[0]) */.emit('client_notification', data);
 	});
 });
 

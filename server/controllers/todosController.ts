@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { OPTIONS } from './../../src/constants/index';
 import TodoModel from '../models/Todo';
-import { GET_TODOS_EVENT } from '../constants';
-import { socket } from '../server';
+import { NOTIFICATION } from '../constants';
 
 class TodosController {
 	async fetchTodos(selectedOption: any, userId: string) {
@@ -24,14 +23,15 @@ class TodosController {
 		try {
 			const { id: userID } = req.user;
 			let result = await this.fetchTodos(req.query.filter, userID);
-			socket.emit(GET_TODOS_EVENT, result);
-			res.send(result);
+			console.log(result);
+			req.sentEvent({ type: NOTIFICATION.GET_TODOS, data: result });
+			return res.json('OK');
 		} catch (err) {
 			return res.json(err);
 		}
 	};
 
-	addTodo = async (req: any, res: any) => {
+	addTodo = async (req: any, res: Response, next: any) => {
 		try {
 			const { title } = req.body;
 			const { id: userID } = req.user;
@@ -43,10 +43,8 @@ class TodosController {
 			};
 
 			await TodoModel.insertTodo(newTodoOptions);
-			let result = await this.fetchTodos(req.query.filter, userID);
-			socket.emit(GET_TODOS_EVENT, result);
-
-			res.send(result);
+			req.sentEvent({ type: NOTIFICATION.ADD_TODO, data: newTodoOptions });
+			return res.json('OK');
 		} catch (err) {
 			return res.json(err);
 		}
@@ -54,13 +52,10 @@ class TodosController {
 
 	deleteTodo = async (req: any, res: any) => {
 		try {
-			const { id: userID } = req.user;
 			const { id } = req.params;
 			await TodoModel.deleteTodoById(id);
-			let result = await this.fetchTodos(req.query.filter, userID);
-			socket.emit(GET_TODOS_EVENT, result);
-
-			res.send(result);
+			req.sentEvent({ type: NOTIFICATION.DELETE_TODO, data: id });
+			return res.json('OK');
 		} catch (err) {
 			return res.json(err);
 		}
@@ -80,10 +75,16 @@ class TodosController {
 			} else {
 				let status = isAllCompleted ? false : true;
 				await TodoModel.updateAllTodosChecked(status);
+				let result = await this.fetchTodos(req.query.filter, userID);
+				req.sentEvent({ type: NOTIFICATION.ALL_COMPLETED_TODOS, data: result });
+				return res.json('OK');
 			}
-			let result = await this.fetchTodos(req.query.filter, userID);
-			socket.emit(GET_TODOS_EVENT, result);
-			res.send(result);
+			let updatedTodo = await TodoModel.getTodoById(id);
+			req.sentEvent({
+				type: NOTIFICATION.UPDATE_TODO,
+				data: updatedTodo,
+			});
+			return res.json('OK');
 		} catch (err) {
 			return res.json(err);
 		}

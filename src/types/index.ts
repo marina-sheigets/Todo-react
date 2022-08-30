@@ -1,7 +1,7 @@
 export interface Todo {
-	Todo_id: number;
-	Todo_text: string;
-	Todo_checked: boolean;
+	id: number;
+	text: string;
+	checked: boolean;
 }
 
 export interface ITodosReducerState {

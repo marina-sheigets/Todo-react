@@ -8,7 +8,7 @@ class TodoModel {
 			.createQueryBuilder()
 			.where('todo.checked=:checked', { checked: status })
 			.andWhere('todo.userId=:userId', { userId })
-			.getRawMany();
+			.getMany();
 	}
 
 	async getAllTodosByUserId(userId: string) {
@@ -16,7 +16,7 @@ class TodoModel {
 			.getRepository(Todo)
 			.createQueryBuilder()
 			.where('todo.userId=:userId', { userId })
-			.getRawMany();
+			.getMany();
 	}
 
 	async getTodoById(id: string) {

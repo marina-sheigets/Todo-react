@@ -4,8 +4,9 @@ import {
 	GET_TODOS,
 	SET_TODOS,
 	ADD_TODO,
+	SET_NEW_TODO,
 	UPDATE_TODO,
-	CHANGE_TODO_COMPLETED,
+	CHANGE_TODOS_COMPLETED,
 	CHANGE_TODO_STATUS,
 	SET_SELECTED,
 } from '../constants';
@@ -41,6 +42,27 @@ export function addTodoRequest<T>(bodyContent: T): IRootReducerAction<T> {
 	};
 }
 
+export function setNewTodo<T>(newTodo: T): IRootReducerAction<T> {
+	return {
+		type: SET_NEW_TODO.SUCCESS,
+		payload: newTodo,
+	};
+}
+
+export function setUpdatedTodoSuccess<T>(updatedTodo: T): IRootReducerAction<T> {
+	return {
+		type: UPDATE_TODO.SUCCESS,
+		payload: updatedTodo,
+	};
+}
+
+export function deleteTodoSuccess<T>(deleteTodoId: T): IRootReducerAction<T> {
+	return {
+		type: DELETE_TODO.SUCCESS,
+		payload: deleteTodoId,
+	};
+}
+
 export function updateTodoRequest<T>(bodyContent: T): IRootReducerAction<T> {
 	return { type: UPDATE_TODO.REQUEST, payload: bodyContent };
 }
@@ -50,7 +72,11 @@ export function changeTodoStatusRequest<T>(bodyContent: T): IRootReducerAction<T
 }
 
 export function changeAllCompletedRequest<T>(bodyContent: T): IRootReducerAction<T> {
-	return { type: CHANGE_TODO_COMPLETED.REQUEST, payload: bodyContent };
+	return { type: CHANGE_TODOS_COMPLETED.REQUEST, payload: bodyContent };
+}
+
+export function changeAllCompletedSuccess<T>(bodyContent: T): IRootReducerAction<T> {
+	return { type: CHANGE_TODOS_COMPLETED.SUCCESS, payload: bodyContent };
 }
 
 // for select

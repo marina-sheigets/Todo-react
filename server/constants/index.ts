@@ -9,5 +9,12 @@ export const ROLES = {
 };
 export const COLLECTION = 'todos';
 
-export const GET_TODOS_EVENT = 'GET_TODOS';
+export const NOTIFICATION = {
+	ADD_TODO: 'ADD_TODO',
+	DELETE_TODO: 'DELETE_TODO',
+	ALL_COMPLETED_TODOS: 'ALL_COMPLETED_TODOS',
+	UPDATE_TODO: 'UPDATE_TODO',
+	GET_TODOS: 'GET_TODOS',
+};
+
 export const ADD_TODO_EVENT = 'ADD_TODO';

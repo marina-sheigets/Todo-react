@@ -30,10 +30,12 @@ app.use(
 	})
 );
 app.use(errorMiddleware);
-/* app.use((req: any, res, next) => {
-	req.io = io;
+app.use((req: any, res, next) => {
+	req.sentEvent = (object: any) => {
+		socket.emit('server_notification', object);
+	};
 	next();
-}); */
+});
 //routes
 app.use('/todos', TodosRouter);
 app.use('/auth', AuthRouter);
