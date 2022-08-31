@@ -23,8 +23,7 @@ class TodosController {
 		try {
 			const { id: userID } = req.user;
 			let result = await this.fetchTodos(req.query.filter, userID);
-			console.log(result);
-			req.sentEvent({ type: NOTIFICATION.GET_TODOS, data: result });
+			req.sentEvent({ type: NOTIFICATION.GET_TODOS, data: result, userID });
 			return res.json('OK');
 		} catch (err) {
 			return res.json(err);
@@ -43,7 +42,7 @@ class TodosController {
 			};
 
 			await TodoModel.insertTodo(newTodoOptions);
-			req.sentEvent({ type: NOTIFICATION.ADD_TODO, data: newTodoOptions });
+			req.sentEvent({ type: NOTIFICATION.ADD_TODO, data: newTodoOptions, userID });
 			return res.json('OK');
 		} catch (err) {
 			return res.json(err);

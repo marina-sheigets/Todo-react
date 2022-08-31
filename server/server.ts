@@ -46,41 +46,6 @@ db.initialize()
 	})
 	.catch((err) => console.log('Error' + err));
 
-let user: any = [];
-
-const addUser = (userID: string, socketID: string) => {
-	!user.some((item: any) => item.userID === userID) && user.push({ userID, socketID });
-};
-
-/* 
-io.on('connection', (socket) => {
-	console.log('user is connected');
-	global.socket = socket; */
-//socket.emit("event","hello");
-//socket.on(ADD_TODO_EVENT, todosController.addTodo);
-/*
-	socket.on('addTodo', async (payload) => {
-		console.log('add todo sokcet');
-
-		try {
-			const { title, selectedOption, userID } = payload;
-			console.log('addTodoSocket');
-			const newTodoOptions = {
-				id: Date.now(),
-				text: title,
-				userId: +userID,
-			};
-
-			await TodoModel.insertTodo(newTodoOptions);
-			socket.emit('addTodoSuccess', await todosController.fetchTodos(selectedOption, userID));
-			//res.send(await this.fetchTodos(req.query.filter, userID));
-		} catch (err) {
-			console.log(err);
-			//return res.json(err);
-		}
-	}); */
-/* }); */
-
 httpServer.listen(PORT, () => {
 	console.log(`Server is listening on port ${PORT}...`);
 });

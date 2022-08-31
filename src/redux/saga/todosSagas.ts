@@ -33,12 +33,12 @@ function* getTodosSaga() {
 	try {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const TODOS_URL = getURL(selectedOption);
-
+		const userID: ResponseGenerator = yield select(getUserID);
 		const requestOptions = {
 			method: HTTP_METHODS.GET,
 		};
-		/* const todos: ResponseGenerator =  */ yield call(callAPI, TODOS_URL, requestOptions);
-		//yield put(setTodosSuccess(todos));
+		socket.emit('join', userID);
+		yield call(callAPI, TODOS_URL, requestOptions);
 	} catch (error) {
 		let message = 'Unknown Error';
 		if (error instanceof Error) message = error.message;
@@ -57,7 +57,7 @@ function* deleteTodoSaga(action: IAction) {
 			method: HTTP_METHODS.DELETE,
 		};
 
-		const deleteTodoId: ResponseGenerator = yield call(callAPI, TODOS_URL, requestOptions);
+		yield call(callAPI, TODOS_URL, requestOptions);
 	} catch (error) {
 		let message = 'Unknown Error';
 		if (error instanceof Error) message = error.message;
@@ -66,7 +66,6 @@ function* deleteTodoSaga(action: IAction) {
 }
 
 function* addTodoSaga(action: IAction) {
-	console.log('add saga');
 	try {
 		const selectedOption: ResponseGenerator = yield select(getSelectedOption);
 		const title = action.payload;
@@ -80,7 +79,6 @@ function* addTodoSaga(action: IAction) {
 	} catch (error) {
 		let message = 'Unknown Error';
 		if (error instanceof Error) message = error.message;
-		console.log(message);
 		yield put(setTodosFail(message));
 	}
 }
@@ -141,7 +139,6 @@ function* changeAllCompletedSaga(action: IAction) {
 
 function* notificationSaga(action: IAction) {
 	const { payload } = action;
-	console.log(action);
 	switch (payload.type) {
 		case NOTIFICATION.ADD_TODO:
 			yield put(setNewTodo(payload.data)); //TODOS =[]???

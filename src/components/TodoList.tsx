@@ -16,9 +16,7 @@ const TodoList: FC = () => {
 
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		console.log('useeffect');
-	}, []);
+	useEffect(() => {}, []);
 
 	useEffect(() => {
 		dispatch(getTodosRequest());

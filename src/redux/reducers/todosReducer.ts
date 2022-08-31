@@ -35,7 +35,6 @@ const todosReducer = (state = initialState, action: IAction): ITodosReducerState
 				todosList: [action.payload, ...state.todosList],
 			};
 		case DELETE_TODO.SUCCESS:
-			console.log(action.payload);
 			return {
 				...state,
 				todosList: state.todosList.filter((elem) => elem.id != action.payload),
@@ -53,7 +52,6 @@ const todosReducer = (state = initialState, action: IAction): ITodosReducerState
 				}),
 			};
 		case CHANGE_TODOS_COMPLETED.SUCCESS:
-			console.log(action.payload);
 			return { ...state, todosList: [...action.payload], isLoading: false };
 		case SET_SELECTED.SUCCESS:
 			return { ...state, selectedOption: action.payload };

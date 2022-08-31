@@ -15,7 +15,6 @@ const store = configureStore({
 sagaMiddleware.run(rootSaga);
 
 socket.on('client_notification', (data) => {
-	console.log(data);
 	store.dispatch({
 		type: NOTIFICATION_RECEIVED,
 		payload: data,
