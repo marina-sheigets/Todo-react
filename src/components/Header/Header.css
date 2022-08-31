@@ -8,7 +8,7 @@
 	justify-content: center;
 }
 
-.header nav {
+.header .nav {
 	display: flex;
 	width: 50%;
 	justify-content: space-between;
@@ -18,13 +18,4 @@
 .header h2 {
 	display: flex;
 	align-items: center;
-}
-
-.header nav button {
-	height: 3rem;
-	width: 7rem;
-	background-color: coral;
-	font-size: 1.1rem;
-	border: 1px solid grey;
-	border-radius: 5px;
 }

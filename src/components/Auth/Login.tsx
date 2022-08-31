@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import './Auth.css';
 import { getError, getIsAuth } from '../../redux/selectors/authSelector';
 import { Navigate, useNavigate } from 'react-router';
+import { Box } from '@mui/system';
+import { Button, TextField, Typography } from '@mui/material';
 
 function Login() {
 	const dispatch = useDispatch();
@@ -54,30 +56,34 @@ function Login() {
 			{isAuth ? (
 				<Navigate to='/todos' replace={true} />
 			) : (
-				<div className='login-form'>
-					<input
-						type='email'
+				<Box className='login-form'>
+					<TextField
+						size='small'
 						onChange={handleEmailChange}
 						value={email}
-						placeholder='Email'
+						label='Email'
 					/>
-					<input
+					<TextField
+						size='small'
 						type='password'
 						onChange={handleChangePassword}
 						value={password}
-						placeholder='Password'
+						label='Password'
 					/>
-					<button disabled={isAllEmty ? true : false} onClick={loginUser}>
+					<Button
+						style={{ backgroundColor: 'grey', color: 'white' }}
+						disabled={isAllEmty ? true : false}
+						onClick={loginUser}>
 						Login
-					</button>
-					<p onClick={toRegister}>
+					</Button>
+					<Typography onClick={toRegister}>
 						Don`t have an account ?{' '}
-						<button className='action' onClick={toRegister}>
+						<Button className='action' onClick={toRegister}>
 							Sign up
-						</button>
-					</p>
-					{error ? <p className='register-error'>{error}</p> : ''}
-				</div>
+						</Button>
+					</Typography>
+					{error ? <Typography className='register-error'>{error}</Typography> : ''}
+				</Box>
 			)}
 		</>
 	);

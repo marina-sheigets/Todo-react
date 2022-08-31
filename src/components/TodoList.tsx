@@ -7,6 +7,8 @@ import { getError, getIsLoading, getTodos } from '../redux/selectors/todosSelect
 import { io } from 'socket.io-client';
 import { getUserID } from '../redux/selectors/authSelector';
 import { socket } from '../socket';
+import Grid from '@mui/system/Unstable_Grid';
+import { List } from '@mui/material';
 
 const TodoList: FC = () => {
 	const todos = useSelector(getTodos);
@@ -36,11 +38,11 @@ const TodoList: FC = () => {
 
 	return (
 		<>
-			<ul className='todo-list'>
+			<List style={{ width: '80%' }} /* className='todo-list' */>
 				{todos.map((elem, index) => (
 					<TodoItem key={index} todo={elem} />
 				))}
-			</ul>
+			</List>
 		</>
 	);
 };

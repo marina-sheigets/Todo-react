@@ -1,8 +1,10 @@
-import React from 'react';
+import { Button, Typography } from '@mui/material';
+import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../redux/action-creators/authActions';
 import { getUsername } from '../../redux/selectors/authSelector';
 import './Header.css';
+
 function Header() {
 	const username = useSelector(getUsername);
 	const dispatch = useDispatch();
@@ -11,12 +13,14 @@ function Header() {
 		dispatch(logoutUser());
 	};
 	return (
-		<div className='header'>
-			<nav>
-				<h2>Welcome, {username} </h2>
-				<button onClick={logout}>Logout</button>
-			</nav>
-		</div>
+		<Box className='header'>
+			<Box className='nav'>
+				<Typography variant='h5'>Welcome, {username} </Typography>
+				<Button color='inherit' style={{ backgroundColor: 'coral' }} onClick={logout}>
+					Logout
+				</Button>
+			</Box>
+		</Box>
 	);
 }
 

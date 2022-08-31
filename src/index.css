@@ -32,76 +32,32 @@
 
 .todo-form {
 	display: flex;
-	justify-content: center;
-	gap: 0.5rem;
-	height: 2rem;
-	margin-bottom: 2rem;
+	font-size: 4rem;
+	width: 80%;
+	gap: 0.2rem;
 }
 
 .todo-input {
 	padding-left: 0.3rem;
 }
 
-.submit,
-.activate {
-	min-width: 3rem;
-	background-color: rgb(105, 215, 101);
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
 .activate {
 	font-size: 1.4rem;
-	background-color: coral;
+	background-color: coral !important;
 }
 
 .activate.true {
-	background-color: grey;
-}
-
-.todo-list {
-	/*  text-align: center; */
-	align-items: center;
-	display: flex;
-	width: 70%;
-	flex-direction: column;
-	justify-content: center;
-	gap: 0.5rem;
-	padding-bottom: 1rem;
-}
-
-.todo-list li {
-	list-style: none;
-	width: 100%;
-	justify-content: space-around;
-	align-items: center;
-	display: flex;
-}
-.todo-list li label {
-	flex: 15;
-	text-align: start;
-	user-select: none;
-	overflow-x: hidden;
-	padding: 0 1rem;
-}
-
-.todo-list button {
-	background-color: rgb(252, 88, 88);
-	width: 1rem;
-	border: none;
-	flex: 1;
-	cursor: pointer;
+	background-color: grey !important;
 }
 
 .edit {
 	width: 100%;
 	display: flex;
-	justify-content: space-around;
+	margin-bottom: 0.2rem;
 }
 
-.edit input {
-	flex: 10;
+.edit .edit-field {
+	flex: 12;
 }
 
 .edit .save {
@@ -111,7 +67,8 @@
 
 .edit .cancel {
 	background-color: coral;
-	flex: 3;
+	color: white;
+	flex: 1;
 }
 
 label.true {
@@ -137,12 +94,5 @@ label.true {
 @media screen and (max-width: 370px) {
 	.todo-app {
 		width: 98%;
-	}
-
-	.edit input {
-		flex: 1;
-	}
-	.edit .cancel {
-		flex: 5;
 	}
 }

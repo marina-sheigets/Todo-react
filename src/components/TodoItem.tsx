@@ -1,3 +1,14 @@
+import {
+	Button,
+	Checkbox,
+	FormLabel,
+	Grid,
+	Box,
+	ListItem,
+	ListItemButton,
+	ListItemText,
+	TextField,
+} from '@mui/material';
 import { ChangeEvent, FC, useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
@@ -6,6 +17,9 @@ import {
 	updateTodoRequest,
 } from '../redux/action-creators/todoActions';
 import { IBodyContent, Todo } from '../types';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface TodoItemProps {
 	todo: Todo;
@@ -65,29 +79,48 @@ const TodoItem: FC<TodoItemProps> = ({ todo }) => {
 	return (
 		<>
 			{editingMode ? (
-				<span className='edit'>
-					<button type='button' className='save' onClick={handleEditTodo}>
-						☑
-					</button>
-					<input value={editText} onChange={handleChangeEditText} />
-					<button className='cancel' type='submit' onClick={handleCancelTodo}>
-						Cancel
-					</button>
-				</span>
+				<Box className='edit'>
+					<Button className='save' variant='contained' onClick={handleEditTodo}>
+						<CheckIcon />
+					</Button>
+					<TextField
+						className='edit-field'
+						size='small'
+						value={editText}
+						onChange={handleChangeEditText}
+					/>
+					<Button
+						className='cancel'
+						variant='contained'
+						type='submit'
+						onClick={handleCancelTodo}>
+						<ClearIcon />
+					</Button>
+				</Box>
 			) : (
-				<li>
-					<input type='checkbox' checked={checked} onChange={handleChangeStatus} />
-					<label
+				<ListItem
+					style={{
+						display: 'flex',
+						width: '100%',
+						padding: 0 /* , paddingRight: 'none' */,
+					}}>
+					<Checkbox checked={checked} onChange={handleChangeStatus} style={{ flex: 1 }} />
+					<FormLabel
+						style={{ flex: 12, paddingLeft: '2rem !important' }}
 						htmlFor={id.toString()}
 						className={checked.toString()}
 						onDoubleClick={handleSetEdit}>
 						{text}
-					</label>
-					<button type='button' onClick={deleteTodo}>
-						{' '}
-						×
-					</button>
-				</li>
+					</FormLabel>
+					<Button
+						size='medium'
+						className='cancel'
+						variant='contained'
+						onClick={deleteTodo}
+						style={{ flex: 1 }}>
+						<DeleteIcon />
+					</Button>
+				</ListItem>
 			)}
 		</>
 	);

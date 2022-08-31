@@ -1,3 +1,5 @@
+import { Button, TextField, Typography } from '@mui/material';
+import { Box, Container } from '@mui/system';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router';
@@ -62,51 +64,51 @@ function Registration() {
 			{isAuth ? (
 				<Navigate to='/todos' replace={true} />
 			) : (
-				<div className='login-form'>
-					<input
-						type='email'
+				<Box className='login-form'>
+					<TextField
+						size='small'
 						onChange={handleEmailChange}
 						value={email}
-						placeholder='Email'
+						label='Email'
 					/>
-					<input
-						type='text'
+					<TextField
+						size='small'
 						onChange={handleUsernameChange}
 						value={username}
-						placeholder='Username'
+						label='Username'
 					/>
-					<input
+					<TextField
+						size='small'
 						type='password'
 						className={isPasswordsEqual ? '' : 'error'}
 						onChange={handleChangePassword}
 						value={password}
-						placeholder='Password'
+						label='Password'
 					/>
-					<input
+					<TextField
+						size='small'
 						type='password'
 						className={isPasswordsEqual ? '' : 'error'}
 						onChange={handleChangeConfirmedPassword}
 						value={confirmedPassword}
-						placeholder='Confirm password'
+						label='Confirm password'
 					/>
 					{isPasswordsEqual ? (
 						''
 					) : (
-						<p className='register-error'>Passwords are not equal</p>
+						<Typography className='register-error'>Passwords are not equal</Typography>
 					)}
-					<button
+					<Button
 						disabled={!isPasswordsEqual || isAllEmty ? true : false}
+						style={{ backgroundColor: 'grey', color: 'white' }}
 						onClick={register}>
 						Register
-					</button>
-					<p onClick={register}>
-						Already have an account ?{' '}
-						<button className='action' onClick={toLogin}>
-							Log in
-						</button>
-					</p>
-					{error ? <p className='register-error'>{error}</p> : ''}
-				</div>
+					</Button>
+					<Typography variant='body1' onClick={register}>
+						Already have an account ?<Button onClick={toLogin}>Log in</Button>
+					</Typography>
+					{error ? <Typography className='register-error'>{error}</Typography> : ''}
+				</Box>
 			)}
 		</>
 	);

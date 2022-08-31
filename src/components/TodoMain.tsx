@@ -1,8 +1,10 @@
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 import { ChangeEvent, FC, FormEvent, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router';
 import { addTodoRequest, changeAllCompletedRequest } from '../redux/action-creators/todoActions';
 import { getIsAuth } from '../redux/selectors/authSelector';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
 import { getTodos } from '../redux/selectors/todosSelector';
 import { Todo } from '../types';
 import Filtering from './Filtering';
@@ -41,28 +43,35 @@ const TodoMain: FC = () => {
 			) : (
 				<>
 					<Header />
-					<div className='todo-app'>
-						<h1 className='main-h1'>ToDo List</h1>
-						<form className='todo-form' onSubmit={addTodo}>
-							<button
-								type='button'
+					<Box className='todo-app'>
+						<Typography variant='h3' className='main-h1'>
+							ToDo List
+						</Typography>
+						<Box component='form' className='todo-form' onSubmit={addTodo}>
+							<Button
+								variant='contained'
+								style={{ flex: 1 }}
 								className={`activate ${isAllCompleted}`}
+								type='button'
 								onClick={changeAllCompleted}>
-								☑
-							</button>
-							<input
-								type='text'
+								<BeenhereIcon />
+							</Button>
+							<TextField
+								size='small'
+								style={{ flex: 12 }}
+								type={'text'}
 								value={newTodoText}
 								onChange={handleInputChange}
-								className='todo-input'
-								placeholder='Enter todo task'
+								label='Enter todo task'
 							/>
-							<input type='submit' className='submit' value='Add' />
-						</form>
+							<Button type='submit' variant='contained' style={{ flex: 1 }}>
+								Add
+							</Button>
+						</Box>
 
 						<TodoList />
 						<Filtering />
-					</div>
+					</Box>
 				</>
 			)}
 		</>
