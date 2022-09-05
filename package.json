@@ -78,5 +78,14 @@
 		"@types/jsonwebtoken": "^8.5.8",
 		"@types/mysql": "^2.15.21",
 		"cors": "^2.8.5"
+	},
+	"jest": {
+		"moduleFileExtensions": [
+			"js",
+			"jsx",
+			"tsx",
+			"ts"
+		],
+		"rootDir": "src/"
 	}
 }

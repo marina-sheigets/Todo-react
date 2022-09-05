@@ -1,6 +1,5 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import {
-	registerUserRequest,
 	loginUserRequest,
 	clearError,
 	checkUserAuth,
@@ -11,6 +10,7 @@ import { getError, getIsAuth } from '../../redux/selectors/authSelector';
 import { Navigate, useNavigate } from 'react-router';
 import { Box } from '@mui/system';
 import { Button, TextField, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 function Login() {
 	const dispatch = useDispatch();
@@ -56,7 +56,7 @@ function Login() {
 			{isAuth ? (
 				<Navigate to='/todos' replace={true} />
 			) : (
-				<Box className='login-form'>
+				<Box data-testid='login-div' className='login-form'>
 					<TextField
 						size='small'
 						onChange={handleEmailChange}
@@ -73,14 +73,15 @@ function Login() {
 					<Button
 						style={{ backgroundColor: 'grey', color: 'white' }}
 						disabled={isAllEmty ? true : false}
+						data-testid='login-button'
 						onClick={loginUser}>
 						Login
 					</Button>
-					<Typography onClick={toRegister}>
+					<Typography>
 						Don`t have an account ?{' '}
-						<Button className='action' onClick={toRegister}>
+						<Link to='/register' data-testid='redirect-to-sign' className='action'>
 							Sign up
-						</Button>
+						</Link>
 					</Typography>
 					{error ? <Typography className='register-error'>{error}</Typography> : ''}
 				</Box>

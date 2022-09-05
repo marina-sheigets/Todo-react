@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from 'react-router';
 import { registerUserRequest, clearError } from '../../redux/action-creators/authActions';
 import { getIsAuth, getError } from '../../redux/selectors/authSelector';
 import './Auth.css';
+import { Link } from 'react-router-dom';
 
 function Registration() {
 	const dispatch = useDispatch();
@@ -99,13 +100,14 @@ function Registration() {
 						<Typography className='register-error'>Passwords are not equal</Typography>
 					)}
 					<Button
+						data-testid='register-button'
 						disabled={!isPasswordsEqual || isAllEmty ? true : false}
 						style={{ backgroundColor: 'grey', color: 'white' }}
 						onClick={register}>
 						Register
 					</Button>
 					<Typography variant='body1' onClick={register}>
-						Already have an account ?<Button onClick={toLogin}>Log in</Button>
+						Already have an account ?<Link to='/' /*  onClick={toLogin} */>Log in</Link>
 					</Typography>
 					{error ? <Typography className='register-error'>{error}</Typography> : ''}
 				</Box>

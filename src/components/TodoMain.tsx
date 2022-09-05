@@ -64,9 +64,14 @@ const TodoMain: FC = () => {
 								onChange={handleInputChange}
 								label='Enter todo task'
 							/>
-							<Button type='submit' variant='contained' style={{ flex: 1 }}>
+							<button
+								data-testid='add-todo-button'
+								type='submit'
+								className='add-button'
+								/* variant='contained' */
+								style={{ flex: 1 }}>
 								Add
-							</Button>
+							</button>
 						</Box>
 
 						<TodoList />

@@ -15,6 +15,7 @@ const initialState: any = {
 const authReducer = (state = initialState, action: any): IAuthReducerState => {
 	switch (action.type) {
 		case SET_USER.SUCCESS:
+			console.log(action.payload);
 			return { ...state, isAuth: true, user: { ...action.payload.user } };
 		case SET_USER.FAIL:
 			return { ...state, error: action.payload.errorMessage };

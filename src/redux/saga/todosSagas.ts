@@ -141,7 +141,7 @@ function* notificationSaga(action: IAction) {
 	const { payload } = action;
 	switch (payload.type) {
 		case NOTIFICATION.ADD_TODO:
-			yield put(setNewTodo(payload.data)); //TODOS =[]???
+			yield put(setNewTodo(payload.data));
 			break;
 		case NOTIFICATION.DELETE_TODO:
 			yield put(deleteTodoSuccess(payload.data));

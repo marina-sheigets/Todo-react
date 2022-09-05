@@ -6,7 +6,7 @@ import { AuthResponse } from '../../types/auth-types';
 import { logoutUser, setUser, setUserFail } from '../action-creators/authActions';
 import { GET_USER_AUTH, LOGIN_USER, LOGOUT, REGISTER_USER } from '../constants';
 
-function* registrationSaga(action: IAction) {
+export function* registrationSaga(action: IAction) {
 	try {
 		const { email, username, password } = yield action.payload;
 		const requestOptions = {
