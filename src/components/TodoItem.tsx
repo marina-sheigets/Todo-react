@@ -80,16 +80,22 @@ const TodoItem: FC<TodoItemProps> = ({ todo }) => {
 		<>
 			{editingMode ? (
 				<Box className='edit'>
-					<Button className='save' variant='contained' onClick={handleEditTodo}>
+					<Button
+						className='save'
+						data-testid='submitEditing'
+						variant='contained'
+						onClick={handleEditTodo}>
 						<CheckIcon />
 					</Button>
 					<TextField
+						data-testid={`edit-input ${id}`}
 						className='edit-field'
 						size='small'
 						value={editText}
 						onChange={handleChangeEditText}
 					/>
 					<Button
+						data-testid='cancel-edit'
 						className='cancel'
 						variant='contained'
 						type='submit'
@@ -104,8 +110,14 @@ const TodoItem: FC<TodoItemProps> = ({ todo }) => {
 						width: '100%',
 						padding: 0 /* , paddingRight: 'none' */,
 					}}>
-					<Checkbox checked={checked} onChange={handleChangeStatus} style={{ flex: 1 }} />
+					<Checkbox
+						data-testid='todo-checked'
+						checked={checked}
+						onChange={handleChangeStatus}
+						style={{ flex: 1 }}
+					/>
 					<FormLabel
+						data-testid='todo-text'
 						style={{ flex: 12, paddingLeft: '2rem !important' }}
 						htmlFor={id.toString()}
 						className={checked.toString()}
@@ -113,6 +125,7 @@ const TodoItem: FC<TodoItemProps> = ({ todo }) => {
 						{text}
 					</FormLabel>
 					<Button
+						data-testid='todo-delete'
 						size='medium'
 						className='cancel'
 						variant='contained'

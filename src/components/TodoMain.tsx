@@ -10,6 +10,7 @@ import { Todo } from '../types';
 import Filtering from './Filtering';
 import Header from './Header/Header';
 import TodoList from './TodoList';
+import { Link } from 'react-router-dom';
 
 const TodoMain: FC = () => {
 	const [newTodoText, setNewTodoText] = useState('');
@@ -39,7 +40,7 @@ const TodoMain: FC = () => {
 	return (
 		<>
 			{!isAuth ? (
-				<Navigate to='/' replace={true} />
+				<Link to='/' replace={true} />
 			) : (
 				<>
 					<Header />
@@ -49,6 +50,7 @@ const TodoMain: FC = () => {
 						</Typography>
 						<Box component='form' className='todo-form' onSubmit={addTodo}>
 							<Button
+								data-testid='select-all'
 								variant='contained'
 								style={{ flex: 1 }}
 								className={`activate ${isAllCompleted}`}

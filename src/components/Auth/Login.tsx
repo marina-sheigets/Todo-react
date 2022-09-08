@@ -79,9 +79,12 @@ function Login() {
 					</Button>
 					<Typography>
 						Don`t have an account ?{' '}
-						<Link to='/register' data-testid='redirect-to-sign' className='action'>
+						<Button
+							onClick={toRegister}
+							data-testid='redirect-to-sign'
+							className='action'>
 							Sign up
-						</Link>
+						</Button>
 					</Typography>
 					{error ? <Typography className='register-error'>{error}</Typography> : ''}
 				</Box>

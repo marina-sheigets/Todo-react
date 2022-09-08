@@ -65,7 +65,7 @@ function Registration() {
 			{isAuth ? (
 				<Navigate to='/todos' replace={true} />
 			) : (
-				<Box className='login-form'>
+				<Box data-testid='register-div' className='login-form'>
 					<TextField
 						size='small'
 						onChange={handleEmailChange}
@@ -107,7 +107,10 @@ function Registration() {
 						Register
 					</Button>
 					<Typography variant='body1' onClick={register}>
-						Already have an account ?<Link to='/' /*  onClick={toLogin} */>Log in</Link>
+						Already have an account ?
+						<Button data-testid='redirect-to-login' onClick={toLogin}>
+							Log in
+						</Button>
 					</Typography>
 					{error ? <Typography className='register-error'>{error}</Typography> : ''}
 				</Box>

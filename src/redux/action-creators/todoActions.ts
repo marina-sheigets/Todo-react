@@ -13,7 +13,7 @@ import {
 
 export function getTodosRequest<T>(): IRootReducerAction<T> {
 	return {
-		type: GET_TODOS.REQUEST,
+		type: /* GET_TODOS.REQUEST */ 'GET_TODOS_REQUEST',
 	};
 }
 

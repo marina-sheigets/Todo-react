@@ -18,8 +18,6 @@ const TodoList: FC = () => {
 
 	const dispatch = useDispatch();
 
-	useEffect(() => {}, []);
-
 	useEffect(() => {
 		dispatch(getTodosRequest());
 	}, [dispatch]);
@@ -38,7 +36,7 @@ const TodoList: FC = () => {
 
 	return (
 		<>
-			<List style={{ width: '80%' }} /* className='todo-list' */>
+			<List style={{ width: '80%' }} data-testid='todolist' /* className='todo-list' */>
 				{todos.map((elem, index) => (
 					<TodoItem key={index} todo={elem} />
 				))}

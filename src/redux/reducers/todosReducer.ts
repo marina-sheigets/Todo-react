@@ -19,7 +19,7 @@ const initialState: ITodosReducerState = {
 
 const todosReducer = (state = initialState, action: IAction): ITodosReducerState => {
 	switch (action.type) {
-		case GET_TODOS.REQUEST:
+		case /* GET_TODOS.REQUEST */ 'GET_TODOS_REQUEST':
 			return { ...state, isLoading: true };
 		case SET_TODOS.SUCCESS:
 			return { ...state, todosList: [...action.payload], isLoading: false };

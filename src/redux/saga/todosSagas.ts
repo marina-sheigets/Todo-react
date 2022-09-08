@@ -18,16 +18,12 @@ import {
 	setUpdatedTodoSuccess,
 	changeAllCompletedSuccess,
 } from '../action-creators/todoActions';
-import { IAction, ResponseGenerator, Todo } from '../../types';
+import { IAction, ResponseGenerator } from '../../types';
 import { callAPI } from '../../api';
 import { getSelectedOption } from '../selectors/todosSelector';
 import { getURL } from '../../utils';
 import { getUserID } from '../selectors/authSelector';
 import { socket } from '../../socket';
-import { GET_TODOS_EVENT } from '../../socket/constants';
-import store from '../store';
-
-let TODOS: Todo[] = [];
 
 function* getTodosSaga() {
 	try {

@@ -6,13 +6,14 @@ import TodoMain from './components/TodoMain';
 import store from './redux/store';
 
 function App() {
-	return (
-		<Routes>
+	return <TodoMain />;
+	{
+		/* <Routes>
 			<Route path='/todos' element={<TodoMain />} />
 			<Route path='/' element={<Login />} />
 			<Route path='/register' element={<Registration />} />
-		</Routes>
-	);
+		</Routes> */
+	}
 }
 
 export default App;
